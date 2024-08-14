@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "507520596250",
+    "project_id": "prescription-3c2c9",
+    "storage_bucket": "prescription-3c2c9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507520596250:android:44f63e6109bc490a05d4a3",
+        "android_client_info": {
+          "package_name": "com.example.abin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_y5Bv_L4fPCZJr47XtMlweN2XbHZ_dt4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507520596250:android:847ae08f31d6fcb405d4a3",
+        "android_client_info": {
+          "package_name": "com.project.e_prescription"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_y5Bv_L4fPCZJr47XtMlweN2XbHZ_dt4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
