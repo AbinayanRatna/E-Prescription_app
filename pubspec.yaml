@@ -63,18 +63,7 @@ flutter_icons:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/ellipse1.svg
-    - assets/Group.svg
-    - assets/ellipse2.svg
-    - assets/ellipse3.svg
-    - assets/ellipse4.svg
-    - assets/ellipse8.svg
-    - assets/ellipse6.svg
-    - assets/ellipse7.svg
-    - assets/ellipse9.svg
-    - assets/image1.svg
-    - assets/Union.svg
-    - assets/logo.png
+    - assets/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

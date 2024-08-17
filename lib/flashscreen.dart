@@ -1,10 +1,10 @@
 import 'package:abin/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import 'Signinpage.dart';
 import 'constans.dart';
 import 'login_screen.dart';
-import 'Signinpage.dart';
-import 'colors.dart';
 
 class FlashScreen extends StatefulWidget {
   const FlashScreen({super.key});
@@ -21,8 +21,10 @@ class _FlashScreenState extends State<FlashScreen> {
     return Scaffold(
       backgroundColor: Color(0xFFFFFFFF),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start, //align widgets from left side
-        mainAxisAlignment: MainAxisAlignment.start, //align the children widgets from the start
+        crossAxisAlignment: CrossAxisAlignment.start,
+        //align widgets from left side
+        mainAxisAlignment: MainAxisAlignment.start,
+        //align the children widgets from the start
         children: <Widget>[
           Stack(
             children: <Widget>[
@@ -35,7 +37,7 @@ class _FlashScreenState extends State<FlashScreen> {
                 padding: EdgeInsets.only(top: height * 0.2),
                 child: Center(
                   child: SvgPicture.asset("assets/Group.svg",
-                     // fit: BoxFit.contain,
+                      // fit: BoxFit.contain,
                       width: width,
                       height: 0.35 * height),
                 ),
@@ -47,12 +49,15 @@ class _FlashScreenState extends State<FlashScreen> {
             child: Center(
               child: Column(
                 children: <Widget>[
-                  Text(
-                    appName,
-                    style: TextStyle(
-                        fontSize: 34,
-                        fontWeight: FontWeight.bold,
-                        color: primaryColor //bold font
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5, right: 5),
+                    child: Text(
+                      appName,
+                      style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: primaryColor //bold font
+                          ),
                     ),
                   ),
                 ],
@@ -62,17 +67,19 @@ class _FlashScreenState extends State<FlashScreen> {
           Expanded(
             child: Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start, // Align items at the top
+                mainAxisAlignment: MainAxisAlignment.start,
+                // Align items at the top
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.only(top: height * 0.08),
                     child: SizedBox(
                       height: height * 0.06,
                       width: width * 0.4,
-                      child: FloatingActionButton(
-                        backgroundColor: primaryColor,
+                      child: ElevatedButton(
+                        style:ElevatedButton.styleFrom(backgroundColor: primaryColor,
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10))),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10)))),
                         onPressed: () {
                           //next screen
                           Navigator.push(
@@ -98,10 +105,13 @@ class _FlashScreenState extends State<FlashScreen> {
                     child: SizedBox(
                       height: height * 0.06,
                       width: width * 0.4,
-                      child: FloatingActionButton(
-                        backgroundColor: primaryColor,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10))),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(10)))
+                        ),
                         onPressed: () {
                           Navigator.push(
                             context,
