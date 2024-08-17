@@ -6,6 +6,10 @@ import 'package:intl/intl.dart';
 
 import 'Doctor.dart';
 import 'Pat_homescreen.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import'package:flutter_date_pickers/flutter_date_pickers.dart' as fdp;
+
+
 
 class SignInscreen extends StatefulWidget {
   const SignInscreen({super.key});
@@ -33,6 +37,7 @@ class _SignInscreenState extends State<SignInscreen> {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
       try {
+
         UserCredential userCredential =
             await _auth.createUserWithEmailAndPassword(
           email: _email!,
@@ -57,10 +62,8 @@ class _SignInscreenState extends State<SignInscreen> {
         if (_userType == 'doctor') {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  DoctorScreen(userId: userCredential.user!.uid),
-            ),
+
+            MaterialPageRoute(builder: (context) => DoctorScreen(userId: userCredential.user!.uid),),
           );
         } else if (_userType == 'patient') {
           Navigator.push(
@@ -72,8 +75,8 @@ class _SignInscreenState extends State<SignInscreen> {
         String errorMessage;
         switch (e.code) {
           case 'email-already-in-use':
-            errorMessage =
-                'The email address is already in use by another account.';
+
+            errorMessage = 'The email address is already in use by another account.';
             break;
           case 'invalid-email':
             errorMessage = 'The email address is not valid.';
@@ -89,6 +92,7 @@ class _SignInscreenState extends State<SignInscreen> {
         }
         print('Error: $e');
         // Show error message
+
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(errorMessage)));
       } catch (e) {
@@ -131,7 +135,7 @@ class _SignInscreenState extends State<SignInscreen> {
                     ),
                     Center(
                       child: Padding(
-                        padding: EdgeInsets.only(top: height * 0.16),
+                        padding: EdgeInsets.only(top: height*0.16),
                         child: Text(
                           "Welcome to E-Prescription!",
                           style: TextStyle(
@@ -146,6 +150,7 @@ class _SignInscreenState extends State<SignInscreen> {
                       padding: EdgeInsets.only(
                           left: width * 0.02, top: height * 0.24),
                       child: TextFormField(
+
                         onSaved: (value) {
                           _name = value;
                         },
@@ -188,7 +193,8 @@ class _SignInscreenState extends State<SignInscreen> {
                         decoration: InputDecoration(
                             focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: primaryColor)),
-                            prefixIcon: Icon(Icons.phone, color: primaryColor),
+                            prefixIcon:
+                            Icon(Icons.phone, color: primaryColor),
                             labelText: "PHONE NUMBER",
                             labelStyle: TextStyle(
                                 color: primaryColor,
@@ -198,7 +204,7 @@ class _SignInscreenState extends State<SignInscreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(
-                          left: width * 0.02, top: height * 0.44),
+                          left: width*0.02,top: height *0.44),
                       child: TextFormField(
                         controller: _dateController,
                         onSaved: (value) {
@@ -214,8 +220,7 @@ class _SignInscreenState extends State<SignInscreen> {
                         decoration: InputDecoration(
                             focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: primaryColor)),
-                            prefixIcon:
-                                Icon(Icons.date_range, color: primaryColor),
+                            prefixIcon: Icon(Icons.date_range, color: primaryColor),
                             labelText: "DATE OF BIRTH",
                             labelStyle: TextStyle(
                                 color: primaryColor,
@@ -231,12 +236,9 @@ class _SignInscreenState extends State<SignInscreen> {
                               return Theme(
                                 data: ThemeData.light().copyWith(
                                   colorScheme: ColorScheme.light(
-                                    primary: primaryColor,
-                                    // header background color
-                                    onPrimary: Colors.white,
-                                    // header text color
-                                    surface: Color(0xFFBBDEFB),
-                                    // background color
+                                    primary: primaryColor, // header background color
+                                    onPrimary: Colors.white, // header text color
+                                    surface: Color(0xFFBBDEFB), // background color
                                     onSurface: primaryColor, // text color
                                   ),
                                 ),
@@ -245,8 +247,7 @@ class _SignInscreenState extends State<SignInscreen> {
                             },
                           );
                           if (selectedDate != null) {
-                            String formattedDate =
-                                DateFormat('MM/dd/yyyy').format(selectedDate);
+                            String formattedDate = DateFormat('MM/dd/yyyy').format(selectedDate);
                             setState(() {
                               _dateController.text = formattedDate;
                             });
@@ -325,8 +326,8 @@ class _SignInscreenState extends State<SignInscreen> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(
-                          left: width * 0.02, top: height * 0.74),
+                      padding:  EdgeInsets.only(
+                          left: width*0.02,top: height *0.74),
                       child: TextFormField(
                         onSaved: (value) {
                           _password = value;
@@ -334,7 +335,7 @@ class _SignInscreenState extends State<SignInscreen> {
                         validator: (password) {
                           if (password == null || password.isEmpty) {
                             return "Please Enter the Password";
-                          } else if (password.length < 6) {
+                          } else if (password.length  <6) {
                             return "Not a valid Password";
                           }
                           return null;
@@ -353,26 +354,22 @@ class _SignInscreenState extends State<SignInscreen> {
                     Row(
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(
-                              left: width * 0.07, top: height * 0.88),
+                          padding: EdgeInsets.only(left: width*0.07,top: height *0.88),
                           child: Center(
                             child: SizedBox(
                               height: height * 0.07,
                               width: width * 0.4,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: primaryColor,
-                                  // Background color
-                                  shadowColor: Colors.grey,
-                                  // Shadow color
+                                  backgroundColor: primaryColor, // Background color
+                                  shadowColor: Colors.grey, // Shadow color
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(13)),
                                 ),
                                 onPressed: () {
-                                  if (formKey.currentState?.validate() ??
-                                      false) {
+                                  if (formKey.currentState?.validate() ?? false) {
                                     formKey.currentState?.save();
-                                    _registerUser(context, "doctor");
+                                    _registerUser(context,"doctor");
                                   }
                                 },
                                 child: Text(
@@ -388,27 +385,22 @@ class _SignInscreenState extends State<SignInscreen> {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(
-                              left: width * 0.065, top: height * 0.88),
+                          padding: EdgeInsets.only(left: width*0.065,top: height *0.88),
                           child: Center(
                             child: SizedBox(
                               height: height * 0.07,
                               width: width * 0.4,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: primaryColor,
-                                  // Background color
-                                  shadowColor: Colors.grey,
-                                  // Shadow color
+                                  backgroundColor: primaryColor, // Background color
+                                  shadowColor: Colors.grey, // Shadow color
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(13)),
                                 ),
                                 onPressed: () {
-                                  if (formKey.currentState?.validate() ??
-                                      false) {
+                                  if (formKey.currentState?.validate() ?? false) {
                                     formKey.currentState?.save();
-                                    _registerUser(context,
-                                        "patient"); // Pass user type as "patient"
+                                    _registerUser(context, "patient"); // Pass user type as "patient"
                                   }
                                 },
                                 child: Text(

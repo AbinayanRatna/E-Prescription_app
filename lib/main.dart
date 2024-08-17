@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'flashscreen.dart';
-// Ensure this import is correct
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
