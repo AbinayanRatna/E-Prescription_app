@@ -1,4 +1,5 @@
 import 'package:abin/Doc_homescreen.dart';
+import 'package:abin/diagnosis_page.dart';
 import 'package:abin/home_screen.dart';
 import 'package:abin/prescription_writing_page.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(Duration(seconds: 3), () {});
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => PrescriptionWritingPage()),
+      MaterialPageRoute(builder: (context) => DiagnosisPage()),
     );
   }
 

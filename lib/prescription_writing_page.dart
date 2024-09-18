@@ -13,6 +13,10 @@ class PrescriptionWritingPage extends StatefulWidget {
 }
 
 class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
+
+  TextEditingController controller_generic_name=TextEditingController();
+  TextEditingController controller_brand_name=TextEditingController();
+
   List<DropdownMenuItem<String>> get dropdownItems_frequency {
     List<DropdownMenuItem<String>> menuItems = [
       const DropdownMenuItem(value: "q3H", child: Text("Every 3 hours")),
@@ -89,9 +93,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
   String selectedValue_frequency = "q8H";
   String selectedValue_intaketime = "Before meals";
   String selectedValue_route = "Taken by mouth";
-  String selectedValue_duration = "q12H";
   String selectedValue_refill = "no refill";
-
   String text_dosage = "500 mg";
   String text_duration = "3 days";
 
@@ -101,6 +103,12 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         automaticallyImplyLeading: true,
+        actions: [
+          Padding(
+            padding:  EdgeInsets.only(right:6.w),
+            child: IconButton(onPressed: () => {}, icon: Icon(Icons.logout,color: Colors.white,size: 30.w,)),
+          ),
+        ],
         toolbarHeight: 60.w,
         title: Text(
           "Select medicine",
@@ -111,24 +119,26 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        child: Column(
-          children: [
-            Expanded(
-              flex: 10,
-              child: Padding(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              Padding(
                 padding: EdgeInsets.only(top: 25.w, right: 10.w, left: 10.w),
                 child: Column(
                   children: [
-                    const TextField(
-                      decoration: InputDecoration(
+                     TextField(
+                      controller:controller_generic_name ,
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         label: Text("Medicine Name (generic)"),
                       ),
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 15.w),
-                      child: const TextField(
-                        decoration: InputDecoration(
+                      child:  TextField(
+                        controller: controller_brand_name,
+                        decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: "Brand name (If available)"),
                       ),
@@ -269,7 +279,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                             child: TextButton(
                               style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
-                                  side: BorderSide(color: Colors.black45),
+                                  side: const BorderSide(color: Colors.black45),
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(5.w),
                                   ),
@@ -313,7 +323,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                             child: TextButton(
                               style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
-                                  side: BorderSide(color: Colors.black45),
+                                  side: const BorderSide(color: Colors.black45),
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(5.w),
                                   ),
@@ -381,8 +391,8 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: Container(
@@ -419,7 +429,13 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.zero)),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  if(controller_generic_name.text.trim().toString() =="" && controller_brand_name.text.trim().toString() ==""){
+                    showAlertDialog(context);
+                  }else{
+
+                  }
+                },
                 child: Padding(
                   padding: EdgeInsets.only(top: 20.w, bottom: 20.w),
                   child: Text(
@@ -470,4 +486,35 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
       }
     });
   }
+}
+showAlertDialog(BuildContext context) {
+  // Create button
+  Widget okButton = ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(13.w)))
+    ),
+    child: Text("Got it",style:TextStyle(fontSize: 15.sp,color: Colors.red,fontWeight: FontWeight.bold)),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+
+  // Create AlertDialog
+  AlertDialog alert = AlertDialog(
+    backgroundColor: Colors.red,
+    shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(5.w)),
+    content: Text("Medicine name or brand name should be filled.",style: TextStyle(fontSize: 20.sp,fontWeight: FontWeight.bold,color: Colors.white),),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }
