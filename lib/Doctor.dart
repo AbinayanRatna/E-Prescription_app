@@ -11,7 +11,7 @@ import 'colors.dart';
 class DoctorScreen extends StatefulWidget {
   final String userId;
 
-  const DoctorScreen({Key? key, required this.userId}) : super(key: key);
+  const DoctorScreen({super.key, required this.userId});
 
   @override
   State<DoctorScreen> createState() => _DoctorScreenState();
@@ -57,7 +57,7 @@ class _DoctorScreenState extends State<DoctorScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => DocHomeScreen(),
+          builder: (context) => const DocHomeScreen(),
         ),
       );
       String? idProofUrl;
@@ -92,7 +92,7 @@ class _DoctorScreenState extends State<DoctorScreen> {
     double height = MediaQuery.of(context).size.height; // full screen height
     double width = MediaQuery.of(context).size.width; // full screen width
     return Scaffold(
-      backgroundColor: Color(0xFFFFFFFFF),
+      backgroundColor: const Color(0xfffffffff),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: SingleChildScrollView(
@@ -130,7 +130,7 @@ class _DoctorScreenState extends State<DoctorScreen> {
                           return null;
                         },
                         keyboardType: TextInputType.phone,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: primaryColor)),
                             prefixIcon: Icon(Icons.badge, color: primaryColor),
@@ -154,7 +154,7 @@ class _DoctorScreenState extends State<DoctorScreen> {
                           }
                           return null;
                         },
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: primaryColor)),
                             prefixIcon: Icon(Icons.medical_services, color: primaryColor),
@@ -179,7 +179,7 @@ class _DoctorScreenState extends State<DoctorScreen> {
                           return null;
                         },
                         keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: primaryColor)),
                             prefixIcon: Icon(Icons.access_time, color: primaryColor),
@@ -205,9 +205,9 @@ class _DoctorScreenState extends State<DoctorScreen> {
                                 _idProofImage = file;
                               });
                             }),
-                            child: Icon(Icons.photo, color: primaryColor),
+                            child: const Icon(Icons.photo, color: primaryColor),
                           ),
-                          title: Text("UPLOAD ID PROOF (Optional)",
+                          title: const Text("UPLOAD ID PROOF (Optional)",
                             style: TextStyle(
                               color: primaryColor,
                               fontSize: 16,
@@ -217,7 +217,7 @@ class _DoctorScreenState extends State<DoctorScreen> {
                           subtitle: _idProofImageName != null
                               ? Text(_idProofImageName!) // Show the selected image file name
                               : null,
-                          trailing: Icon(Icons.arrow_forward_ios, color: primaryColor),
+                          trailing: const Icon(Icons.arrow_forward_ios, color: primaryColor),
                           onTap: () {
                             _pickImage((file) {
                               setState(() {
@@ -246,7 +246,7 @@ class _DoctorScreenState extends State<DoctorScreen> {
                                 onPressed: () {
                                   _saveData(context);
                                 },
-                                child: Text(
+                                child: const Text(
                                 "SIGN UP",
                                 style: TextStyle(
                                     color: Colors.white,

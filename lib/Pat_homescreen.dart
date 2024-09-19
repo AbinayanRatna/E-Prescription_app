@@ -1,7 +1,6 @@
 
 import 'package:abin/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class PatHomeScreen extends StatefulWidget {
   const PatHomeScreen({super.key});
@@ -21,7 +20,7 @@ class _PatHomeScreenState extends State<PatHomeScreen> {
     double height = MediaQuery.of(context).size.height; // full screen height
     double width = MediaQuery.of(context).size.width; // full screen width
     return Scaffold(
-      backgroundColor: Color(0xFFFFFFFF),
+      backgroundColor: const Color(0xFFFFFFFF),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: SingleChildScrollView(
@@ -39,7 +38,7 @@ class _PatHomeScreenState extends State<PatHomeScreen> {
                     Center(
                       child: Padding(
                         padding: EdgeInsets.only(top: height *0.5),
-                        child: Text(
+                        child: const Text(
                           "welcome patient",
                           style: TextStyle(
                               fontSize: 50,

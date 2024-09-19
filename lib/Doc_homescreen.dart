@@ -1,6 +1,5 @@
 import 'package:abin/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class DocHomeScreen extends StatefulWidget {
   const DocHomeScreen({super.key});
@@ -20,7 +19,7 @@ class _DocHomeScreenState extends State<DocHomeScreen> {
     double height = MediaQuery.of(context).size.height; // full screen height
     double width = MediaQuery.of(context).size.width; // full screen width
     return Scaffold(
-      backgroundColor: Color(0xFFFFFFFF),
+      backgroundColor: const Color(0xFFFFFFFF),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: SingleChildScrollView(
@@ -37,7 +36,7 @@ class _DocHomeScreenState extends State<DocHomeScreen> {
                     Center(
                       child: Padding(
                         padding: EdgeInsets.only(top: height* 0.5),
-                        child: Text(
+                        child: const Text(
                           "welcome doctor",
                           style: TextStyle(
                               fontSize: 50,

@@ -1,9 +1,11 @@
 import 'package:abin/alert_dialog_dosage.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:abin/diagnosis_page.dart';
+import 'package:abin/patientmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'alert_dialog_duration.dart';
+import 'home_screen.dart';
 
 class PrescriptionWritingPage extends StatefulWidget {
   const PrescriptionWritingPage({super.key});
@@ -13,18 +15,45 @@ class PrescriptionWritingPage extends StatefulWidget {
 }
 
 class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
+  TextEditingController controller_generic_name = TextEditingController();
+  TextEditingController controller_brand_name = TextEditingController();
+  List<Medicine> medicines_list = [];
 
-  TextEditingController controller_generic_name=TextEditingController();
-  TextEditingController controller_brand_name=TextEditingController();
+  Future<void> addMedicine(
+      String genericName,
+      String brandName,
+      String frequency,
+      String intakeTime,
+      String route,
+      String strength,
+      String duration,
+      String refill) async {
+    Medicine medicine = Medicine(
+        medicineName: genericName,
+        brandName: brandName,
+        dosage: strength,
+        frequency: frequency,
+        intakeTime: intakeTime,
+        route: route,
+        duration: duration,
+        refillTimes: refill);
+    medicines_list.add(medicine);
+  }
 
   List<DropdownMenuItem<String>> get dropdownItems_frequency {
     List<DropdownMenuItem<String>> menuItems = [
-      const DropdownMenuItem(value: "q3H", child: Text("Every 3 hours")),
-      const DropdownMenuItem(value: "q4H", child: Text("Every 4 hours")),
-      const DropdownMenuItem(value: "q6H", child: Text("Every 6 hours")),
-      const DropdownMenuItem(value: "q8H", child: Text("Every 8 hours")),
-      const DropdownMenuItem(value: "q12H", child: Text("Every 12 hours")),
-      const DropdownMenuItem(value: "q24H", child: Text("Every 24 hours")),
+      const DropdownMenuItem(
+          value: "Every 3 hours", child: Text("Every 3 hours")),
+      const DropdownMenuItem(
+          value: "Every 4 hours", child: Text("Every 4 hours")),
+      const DropdownMenuItem(
+          value: "Every 6 hours", child: Text("Every 6 hours")),
+      const DropdownMenuItem(
+          value: "Every 8 hours", child: Text("Every 8 hours")),
+      const DropdownMenuItem(
+          value: "Every 12 hours", child: Text("Every 12 hours")),
+      const DropdownMenuItem(
+          value: "Every 24 hours", child: Text("Every 24 hours")),
       const DropdownMenuItem(value: "0900, 2100", child: Text("0900, 2100")),
       const DropdownMenuItem(
           value: "0900, 1400, 2100", child: Text("0900, 1400, 2100")),
@@ -90,7 +119,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
     return menuItems;
   }
 
-  String selectedValue_frequency = "q8H";
+  String selectedValue_frequency = "Every 3 hours";
   String selectedValue_intaketime = "Before meals";
   String selectedValue_route = "Taken by mouth";
   String selectedValue_refill = "no refill";
@@ -105,8 +134,24 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
         automaticallyImplyLeading: true,
         actions: [
           Padding(
-            padding:  EdgeInsets.only(right:6.w),
-            child: IconButton(onPressed: () => {}, icon: Icon(Icons.logout,color: Colors.white,size: 30.w,)),
+            padding: EdgeInsets.only(right: 6.w),
+            child: IconButton(
+                onPressed: () => {
+
+                Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                builder: (BuildContext context) =>
+                DiagnosisPage(medicines_list:medicines_list)),
+                (Route<dynamic> route) => route is HomeScreen)
+                  //Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>DiagnosisPage(medicines_list:medicines_list)), (Route<dynamic> route) => route is HomeScreen())
+                  //Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> DiagnosisPage(medicines_list:medicines_list)))
+                },
+                icon: Icon(
+                  Icons.logout,
+                  color: Colors.white,
+                  size: 30.w,
+                )),
           ),
         ],
         toolbarHeight: 60.w,
@@ -116,7 +161,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
         ),
         backgroundColor: Colors.blue,
       ),
-      body: Container(
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: SingleChildScrollView(
@@ -127,8 +172,8 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                 padding: EdgeInsets.only(top: 25.w, right: 10.w, left: 10.w),
                 child: Column(
                   children: [
-                     TextField(
-                      controller:controller_generic_name ,
+                    TextField(
+                      controller: controller_generic_name,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         label: Text("Medicine Name (generic)"),
@@ -136,7 +181,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 15.w),
-                      child:  TextField(
+                      child: TextField(
                         controller: controller_brand_name,
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
@@ -414,7 +459,10 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                   padding: EdgeInsets.only(top: 20.w, bottom: 20.w),
                   child: Text(
                     "Cancel",
-                    style: TextStyle(color: Colors.white, fontSize: 20.sp,fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -425,14 +473,33 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
                   // backgroundColor: const Color.fromRGBO(23, 64, 124, 1.0),
-                  backgroundColor: Color.fromRGBO(8, 43, 69, 1.0),
+                  backgroundColor: const Color.fromRGBO(8, 43, 69, 1.0),
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.zero)),
                 ),
-                onPressed: () {
-                  if(controller_generic_name.text.trim().toString() =="" && controller_brand_name.text.trim().toString() ==""){
+                onPressed: ()  async {
+                  if (controller_generic_name.text.trim().toString() == "" &&
+                      controller_brand_name.text.trim().toString() == "") {
                     showAlertDialog(context);
-                  }else{
+                  } else {
+                     await addMedicine(
+                        controller_generic_name.text.trim().toString(),
+                        controller_brand_name.text.trim().toString(),
+                        selectedValue_frequency,
+                        selectedValue_intaketime,
+                        selectedValue_route,
+                        text_dosage,
+                        text_duration,
+                        selectedValue_refill);
+                     controller_brand_name.text="";
+                     controller_generic_name.text="";
+
+                      selectedValue_frequency = "Every 8 hours";
+                      selectedValue_intaketime = "Before meals";
+                      selectedValue_route = "Taken by mouth";
+                      selectedValue_refill = "no refill";
+                      text_dosage = "500 mg";
+                      text_duration = "3 days";
 
                   }
                 },
@@ -440,7 +507,10 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                   padding: EdgeInsets.only(top: 20.w, bottom: 20.w),
                   child: Text(
                     "Next",
-                    style: TextStyle(color: Colors.white, fontSize: 20.sp,fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -457,7 +527,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
       builder: (context) {
         return AlertDialog(content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-          return AlertDialogPrescription_dosage();
+          return const AlertDialogPrescription_dosage();
         }));
       },
     ).then((value) {
@@ -475,7 +545,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
       builder: (context) {
         return AlertDialog(content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-          return AlertDialogPrescription_duration();
+          return const AlertDialogPrescription_duration();
         }));
       },
     ).then((value) {
@@ -487,14 +557,17 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
     });
   }
 }
+
 showAlertDialog(BuildContext context) {
   // Create button
   Widget okButton = ElevatedButton(
     style: ElevatedButton.styleFrom(
-      backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(13.w)))
-    ),
-    child: Text("Got it",style:TextStyle(fontSize: 15.sp,color: Colors.red,fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(13.w)))),
+    child: Text("Got it",
+        style: TextStyle(
+            fontSize: 15.sp, color: Colors.red, fontWeight: FontWeight.bold)),
     onPressed: () {
       Navigator.of(context).pop();
     },
@@ -504,7 +577,11 @@ showAlertDialog(BuildContext context) {
   AlertDialog alert = AlertDialog(
     backgroundColor: Colors.red,
     shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(5.w)),
-    content: Text("Medicine name or brand name should be filled.",style: TextStyle(fontSize: 20.sp,fontWeight: FontWeight.bold,color: Colors.white),),
+    content: Text(
+      "Medicine name or brand name should be filled.",
+      style: TextStyle(
+          fontSize: 20.sp, fontWeight: FontWeight.bold, color: Colors.white),
+    ),
     actions: [
       okButton,
     ],

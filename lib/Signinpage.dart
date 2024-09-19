@@ -6,8 +6,6 @@ import 'package:intl/intl.dart';
 
 import 'Doctor.dart';
 import 'Pat_homescreen.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_date_pickers/flutter_date_pickers.dart' as fdp;
 
 class SignInscreen extends StatefulWidget {
   const SignInscreen({super.key});
@@ -20,7 +18,7 @@ class _SignInscreenState extends State<SignInscreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final DatabaseReference _database = FirebaseDatabase.instance.reference();
-  TextEditingController _dateController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
 
   String? _email;
   String? _number;
@@ -67,7 +65,7 @@ class _SignInscreenState extends State<SignInscreen> {
         } else if (_userType == 'patient') {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => PatHomeScreen()),
+            MaterialPageRoute(builder: (context) => const PatHomeScreen()),
           );
         }
       } on FirebaseAuthException catch (e) {
@@ -97,7 +95,7 @@ class _SignInscreenState extends State<SignInscreen> {
       } catch (e) {
         print('Error: $e');
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('An unknown error occurred.')));
+            const SnackBar(content: Text('An unknown error occurred.')));
       }
     }
   }
@@ -107,7 +105,7 @@ class _SignInscreenState extends State<SignInscreen> {
     double height = MediaQuery.of(context).size.height; // full screen height
     double width = MediaQuery.of(context).size.width; // full screen width
     return Scaffold(
-      backgroundColor: Color(0xFFFFFFFF),
+      backgroundColor: const Color(0xFFFFFFFF),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: SingleChildScrollView(
@@ -122,7 +120,7 @@ class _SignInscreenState extends State<SignInscreen> {
                     Center(
                       child: Padding(
                         padding: EdgeInsets.only(top: height * 0.09),
-                        child: Text(
+                        child: const Text(
                           "Create an account",
                           style: TextStyle(
                               fontSize: 48,
@@ -135,7 +133,7 @@ class _SignInscreenState extends State<SignInscreen> {
                     Center(
                       child: Padding(
                         padding: EdgeInsets.only(top: height * 0.16),
-                        child: Text(
+                        child: const Text(
                           "Welcome to E-Prescription!",
                           style: TextStyle(
                               fontSize: 19,
@@ -159,7 +157,7 @@ class _SignInscreenState extends State<SignInscreen> {
                           return null;
                         },
                         keyboardType: TextInputType.name,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: primaryColor)),
                             prefixIcon: Icon(Icons.person, color: primaryColor),
@@ -188,7 +186,7 @@ class _SignInscreenState extends State<SignInscreen> {
                           return null;
                         },
                         keyboardType: TextInputType.phone,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: primaryColor)),
                           prefixIcon: Icon(Icons.phone, color: primaryColor),
@@ -215,7 +213,7 @@ class _SignInscreenState extends State<SignInscreen> {
                           return null;
                         },
                         readOnly: true,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: primaryColor)),
                             prefixIcon:
@@ -234,7 +232,7 @@ class _SignInscreenState extends State<SignInscreen> {
                             builder: (BuildContext context, Widget? child) {
                               return Theme(
                                 data: ThemeData.light().copyWith(
-                                  colorScheme: ColorScheme.light(
+                                  colorScheme: const ColorScheme.light(
                                     primary: primaryColor,
                                     // header background color
                                     onPrimary: Colors.white,
@@ -263,7 +261,7 @@ class _SignInscreenState extends State<SignInscreen> {
                           left: width * 0.02, top: height * 0.54),
                       child: DropdownButtonFormField<String>(
                         value: _gender,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: primaryColor),
                           ),
@@ -292,7 +290,7 @@ class _SignInscreenState extends State<SignInscreen> {
                             value: value,
                             child: Text(
                               value,
-                              style: TextStyle(fontWeight: FontWeight.w400), //
+                              style: const TextStyle(fontWeight: FontWeight.w400), //
                               //
                             ),
                           );
@@ -317,7 +315,7 @@ class _SignInscreenState extends State<SignInscreen> {
                           return null;
                         },
                         keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: primaryColor)),
                             prefixIcon: Icon(Icons.email, color: primaryColor),
@@ -343,7 +341,7 @@ class _SignInscreenState extends State<SignInscreen> {
                           }
                           return null;
                         },
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: primaryColor)),
                             prefixIcon: Icon(Icons.lock, color: primaryColor),
@@ -379,7 +377,7 @@ class _SignInscreenState extends State<SignInscreen> {
                                     _registerUser(context, "doctor");
                                   }
                                 },
-                                child: Text(
+                                child: const Text(
                                   "Doctor",
                                   style: TextStyle(
                                       color: Colors.white,
@@ -415,7 +413,7 @@ class _SignInscreenState extends State<SignInscreen> {
                                         "patient"); // Pass user type as "patient"
                                   }
                                 },
-                                child: Text(
+                                child: const Text(
                                   "Patient",
                                   style: TextStyle(
                                       color: Colors.white,

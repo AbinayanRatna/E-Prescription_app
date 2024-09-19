@@ -19,7 +19,7 @@ class _FlashScreenState extends State<FlashScreen> {
     double height = MediaQuery.of(context).size.height; //full screen height
     double width = MediaQuery.of(context).size.width; //full screen width
     return Scaffold(
-      backgroundColor: Color(0xFFFFFFFF),
+      backgroundColor: const Color(0xFFFFFFFF),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         //align widgets from left side
@@ -46,11 +46,11 @@ class _FlashScreenState extends State<FlashScreen> {
           ),
           Padding(
             padding: EdgeInsets.only(top: height * 0.04),
-            child: Center(
+            child: const Center(
               child: Column(
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(left: 5, right: 5),
+                    padding: EdgeInsets.only(left: 5, right: 5),
                     child: Text(
                       appName,
                       style: TextStyle(
@@ -77,7 +77,7 @@ class _FlashScreenState extends State<FlashScreen> {
                       width: width * 0.4,
                       child: ElevatedButton(
                         style:ElevatedButton.styleFrom(backgroundColor: primaryColor,
-                        shape: RoundedRectangleBorder(
+                        shape: const RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10)))),
                         onPressed: () {
@@ -85,11 +85,11 @@ class _FlashScreenState extends State<FlashScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => LoginScreen(),
+                              builder: (context) => const LoginScreen(),
                             ),
                           );
                         },
-                        child: Text(
+                        child: const Text(
                           "Log in",
                           style: TextStyle(
                               color: Colors.white,
@@ -108,7 +108,7 @@ class _FlashScreenState extends State<FlashScreen> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             backgroundColor: primaryColor,
-                            shape: RoundedRectangleBorder(
+                            shape: const RoundedRectangleBorder(
                                 borderRadius:
                                 BorderRadius.all(Radius.circular(10)))
                         ),
@@ -116,11 +116,11 @@ class _FlashScreenState extends State<FlashScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SignInscreen(),
+                              builder: (context) => const SignInscreen(),
                             ),
                           );
                         },
-                        child: Text(
+                        child: const Text(
                           "Sign up",
                           style: TextStyle(
                               color: Colors.white,

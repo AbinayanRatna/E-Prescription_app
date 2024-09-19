@@ -25,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (authUser.user != null) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
       }
     } catch (e) {
@@ -57,17 +57,17 @@ class _LoginScreenState extends State<LoginScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Log In Error',
+          title: const Text('Log In Error',
           style: TextStyle(color: primaryColor),),
 
           content: Text(message,
-          style: TextStyle(color: primaryColor),),
+          style: const TextStyle(color: primaryColor),),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
@@ -81,8 +81,8 @@ class _LoginScreenState extends State<LoginScreen> {
     double height = MediaQuery.of(context).size.height; // full screen height
     double width = MediaQuery.of(context).size.width; // full screen width
     return Scaffold(
-      backgroundColor: Color(0xFFFFFFFF),
-      body: Container(
+      backgroundColor: const Color(0xFFFFFFFF),
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: SingleChildScrollView(
@@ -105,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           Padding(
                             padding: EdgeInsets.only(top: height * 0.35),
-                            child: Center(
+                            child: const Center(
                               child: Text(
                                 "Welcome Back",
                                 style: TextStyle(
@@ -134,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 return null;
                               },
                               keyboardType: TextInputType.emailAddress,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                   focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(color: primaryColor)),
                                   prefixIcon: Icon(Icons.email, color: primaryColor),
@@ -160,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 }
                                 return null;
                               },
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                   focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(color: primaryColor)),
                                   prefixIcon: Icon(Icons.lock, color: primaryColor),
@@ -190,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       signIn(context);
                                     }
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     "Log in",
                                     style: TextStyle(
                                         color: Colors.white,
