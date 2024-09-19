@@ -19,8 +19,12 @@ class DiagnosisPageState extends State<DiagnosisPage> {
   TextEditingController controller_phoneNumber = TextEditingController();
   TextEditingController controller_patientName = TextEditingController();
 
-  Future<void> addPatientToLocalDatabase(Patient patient) async {
+  Future<void> addPatientToLocalDatabase(Patient patient, List<Medicine> medicines) async {
     var box = Hive.box<Patient>('Patients');
+    var boxMedicine = Hive.box<Medicine>('Medicines');
+    for(int i=0;i<medicines.length;i++){
+      await boxMedicine.add(medicines.elementAt(i));
+    }
     await box.add(patient);
   }
 
@@ -174,7 +178,7 @@ class DiagnosisPageState extends State<DiagnosisPage> {
                           controller_diagnosis_details.text.trim().toString(),
                           extra_details:
                           controller_extra_details.text.trim().toString());
-                      await addPatientToLocalDatabase(patient);
+                      await addPatientToLocalDatabase(patient,widget.medicines_list);
                       showSuccessAlertDialog(context);
                     }
                   }

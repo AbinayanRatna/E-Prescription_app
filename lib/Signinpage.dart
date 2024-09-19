@@ -1,7 +1,11 @@
 import 'package:abin/colors.dart';
+import 'package:abin/flashscreen.dart';
+import 'package:abin/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 import 'Doctor.dart';
@@ -50,7 +54,7 @@ class _SignInscreenState extends State<SignInscreen> {
           "gender": _gender!,
           "userType": _userType!,
         };
-        await usersRef.child(userCredential.user!.uid).set(userData);
+        await usersRef.child(_number!).set(userData);
 
         print('User registered: ${userCredential.user?.email}');
         // Navigate to the respective screen based on user type
@@ -105,50 +109,50 @@ class _SignInscreenState extends State<SignInscreen> {
     double height = MediaQuery.of(context).size.height; // full screen height
     double width = MediaQuery.of(context).size.width; // full screen width
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
+      backgroundColor: const Color(0xFFF4F2F2),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
-        child: SingleChildScrollView(
-          child: Form(
-            key: formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Stack(
+        child: Container(
+          width: width,
+          height: height,
+          child: SingleChildScrollView(
+            child: Form(
+              key: formKey,
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: height * 0.09),
-                        child: const Text(
-                          "Create an account",
-                          style: TextStyle(
-                              fontSize: 48,
-                              fontWeight: FontWeight.bold,
-                              color: primaryColor // bold font
-                              ),
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: height * 0.16),
-                        child: const Text(
-                          "Welcome to E-Prescription!",
-                          style: TextStyle(
-                              fontSize: 19,
-                              fontWeight: FontWeight.w700,
-                              color: primaryColor // bold font
-                              ),
-                        ),
-                      ),
-                    ),
                     Padding(
-                      padding: EdgeInsets.only(
-                          left: width * 0.02, top: height * 0.24),
+                       padding:  EdgeInsets.only(top:height/7),
+                       child: RichText(
+                         text: TextSpan(
+                           text: "Create ",
+                           style: TextStyle(
+                             fontSize: 35.sp,
+                             color: Colors.black,
+                             fontWeight: FontWeight.bold
+                           ),
+                           children: <TextSpan>[
+                             TextSpan(
+                               text: "Account ",
+                               style: TextStyle(
+                                   fontSize: 35.sp,
+                                   color: Color.fromRGBO(7, 197, 227, 1.0),
+                                   fontWeight: FontWeight.bold
+                               ),
+                             )
+                           ]
+                         ),
+                                       ),
+                     ),
+                    Padding(
+                      padding:  EdgeInsets.only(top:30.w,left: 25.w,right: 25.w),
                       child: TextFormField(
                         onSaved: (value) {
-                          _name = value;
+                          if(value != ""){
+                            _name = value!.trim().toString();
+                          }
                         },
                         validator: (name) {
                           if (name == null || name.isEmpty) {
@@ -157,20 +161,26 @@ class _SignInscreenState extends State<SignInscreen> {
                           return null;
                         },
                         keyboardType: TextInputType.name,
-                        decoration: const InputDecoration(
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: primaryColor)),
-                            prefixIcon: Icon(Icons.person, color: primaryColor),
+                        decoration:  InputDecoration(
+                          border: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.black12),
+                              borderRadius: BorderRadius.all(Radius.circular(20.w))
+                          ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Color.fromRGBO(
+                                  7, 40, 64, 1.0)),
+                              borderRadius: BorderRadius.all(Radius.circular(20.w))
+                            ),
+                            prefixIcon: const Icon(Icons.person, color: Colors.black38),
                             labelText: "FULL NAME",
                             labelStyle: TextStyle(
-                                color: primaryColor,
-                                fontSize: 16,
+                                color: Colors.black45,
+                                fontSize: 12.sp,
                                 fontWeight: FontWeight.w600)),
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(
-                          left: width * 0.02, top: height * 0.34),
+                      padding: EdgeInsets.only(top:15.w,left: 25.w,right: 25.w),
                       child: TextFormField(
                         onSaved: (value) {
                           _number = value;
@@ -186,21 +196,27 @@ class _SignInscreenState extends State<SignInscreen> {
                           return null;
                         },
                         keyboardType: TextInputType.phone,
-                        decoration: const InputDecoration(
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: primaryColor)),
-                          prefixIcon: Icon(Icons.phone, color: primaryColor),
+                        decoration:  InputDecoration(
+                          border: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.black12),
+                              borderRadius: BorderRadius.all(Radius.circular(20.w))
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Color.fromRGBO(
+                                  7, 40, 64, 1.0)),
+                              borderRadius: BorderRadius.all(Radius.circular(20.w))
+                          ),
+                          prefixIcon: const Icon(Icons.phone, color: Colors.black38),
                           labelText: "PHONE NUMBER",
                           labelStyle: TextStyle(
-                              color: primaryColor,
-                              fontSize: 16,
+                              color: Colors.black45,
+                              fontSize: 12.sp,
                               fontWeight: FontWeight.w600),
                         ),
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(
-                          left: width * 0.02, top: height * 0.44),
+                      padding: EdgeInsets.only(top:15.w,left: 25.w,right: 25.w),
                       child: TextFormField(
                         controller: _dateController,
                         onSaved: (value) {
@@ -213,15 +229,22 @@ class _SignInscreenState extends State<SignInscreen> {
                           return null;
                         },
                         readOnly: true,
-                        decoration: const InputDecoration(
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: primaryColor)),
+                        decoration:  InputDecoration(
+                            border: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.black12),
+                                borderRadius: BorderRadius.all(Radius.circular(20.w))
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Color.fromRGBO(
+                                    7, 40, 64, 1.0)),
+                                borderRadius: BorderRadius.all(Radius.circular(20.w))
+                            ),
                             prefixIcon:
-                                Icon(Icons.date_range, color: primaryColor),
+                                const Icon(Icons.date_range, color: Colors.black38),
                             labelText: "DATE OF BIRTH",
                             labelStyle: TextStyle(
-                                color: primaryColor,
-                                fontSize: 16,
+                                color: Colors.black45,
+                                fontSize: 12.sp,
                                 fontWeight: FontWeight.w600)),
                         onTap: () async {
                           DateTime? selectedDate = await showDatePicker(
@@ -257,19 +280,24 @@ class _SignInscreenState extends State<SignInscreen> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(
-                          left: width * 0.02, top: height * 0.54),
+                      padding: EdgeInsets.only(top:15.w,left: 25.w,right: 25.w),
                       child: DropdownButtonFormField<String>(
                         value: _gender,
-                        decoration: const InputDecoration(
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: primaryColor),
+                        decoration:  InputDecoration(
+                          border: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.black12),
+                              borderRadius: BorderRadius.all(Radius.circular(20.w))
                           ),
-                          prefixIcon: Icon(Icons.wc, color: primaryColor),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Color.fromRGBO(
+                                  7, 40, 64, 1.0)),
+                              borderRadius: BorderRadius.all(Radius.circular(20.w))
+                          ),
+                          prefixIcon: const Icon(Icons.wc, color: Colors.black38),
                           labelText: "GENDER",
                           labelStyle: TextStyle(
-                            color: primaryColor,
-                            fontSize: 16,
+                            color: Colors.black45,
+                            fontSize: 12.sp,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -290,7 +318,7 @@ class _SignInscreenState extends State<SignInscreen> {
                             value: value,
                             child: Text(
                               value,
-                              style: const TextStyle(fontWeight: FontWeight.w400), //
+                              style: TextStyle(fontWeight: FontWeight.w400,fontSize: 15.sp), //
                               //
                             ),
                           );
@@ -298,37 +326,7 @@ class _SignInscreenState extends State<SignInscreen> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(
-                          left: width * 0.02, top: height * 0.64),
-                      child: TextFormField(
-                        onSaved: (value) {
-                          _email = value;
-                        },
-                        validator: (email) {
-                          if (email == null || email.isEmpty) {
-                            return "Please Enter the Email";
-                          } else if (!RegExp(
-                                  r'^[a-zA-Z0-9]+(?:[._%+-][a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*(?:\.[a-zA-Z]{2,})$')
-                              .hasMatch(email)) {
-                            return "Not a valid Email Account";
-                          }
-                          return null;
-                        },
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: primaryColor)),
-                            prefixIcon: Icon(Icons.email, color: primaryColor),
-                            labelText: "EMAIL ADDRESS",
-                            labelStyle: TextStyle(
-                                color: primaryColor,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600)),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          left: width * 0.02, top: height * 0.74),
+                      padding: EdgeInsets.only(top:15.w,left: 25.w,right: 25.w),
                       child: TextFormField(
                         onSaved: (value) {
                           _password = value;
@@ -341,95 +339,136 @@ class _SignInscreenState extends State<SignInscreen> {
                           }
                           return null;
                         },
-                        decoration: const InputDecoration(
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: primaryColor)),
-                            prefixIcon: Icon(Icons.lock, color: primaryColor),
+                        obscureText: true,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        decoration:  InputDecoration(
+                            border: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.black12),
+                                borderRadius: BorderRadius.all(Radius.circular(20.w))
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Color.fromRGBO(
+                                    7, 40, 64, 1.0)),
+                                borderRadius: BorderRadius.all(Radius.circular(20.w))
+                            ),
+                            prefixIcon: const Icon(Icons.lock, color: Colors.black38),
                             labelText: "PASSWORD",
                             labelStyle: TextStyle(
-                                color: primaryColor,
-                                fontSize: 16,
+                                color: Colors.black45,
+                                fontSize: 12.sp,
                                 fontWeight: FontWeight.w600)),
                       ),
                     ),
-                    Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: width * 0.07, top: height * 0.88),
-                          child: Center(
-                            child: SizedBox(
-                              height: height * 0.07,
-                              width: width * 0.4,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: primaryColor,
-                                  // Background color
-                                  shadowColor: Colors.grey,
-                                  // Shadow color
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(13)),
-                                ),
-                                onPressed: () {
-                                  if (formKey.currentState?.validate() ??
-                                      false) {
-                                    formKey.currentState?.save();
-                                    _registerUser(context, "doctor");
-                                  }
-                                },
-                                child: const Text(
-                                  "Doctor",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      letterSpacing: 0.7,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 22),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: width * 0.065, top: height * 0.88),
-                          child: Center(
-                            child: SizedBox(
-                              height: height * 0.07,
-                              width: width * 0.4,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: primaryColor,
-                                  // Background color
-                                  shadowColor: Colors.grey,
-                                  // Shadow color
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(13)),
-                                ),
-                                onPressed: () {
-                                  if (formKey.currentState?.validate() ??
-                                      false) {
-                                    formKey.currentState?.save();
-                                    _registerUser(context,
-                                        "patient"); // Pass user type as "patient"
-                                  }
-                                },
-                                child: const Text(
-                                  "Patient",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      letterSpacing: 0.7,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 22),
+                    Padding(
+                      padding: EdgeInsets.only(top:25.w,left: 25.w,right: 25.w),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex:1,
+                            child: Padding(
+                              padding: EdgeInsets.only(right: 10.w),
+                              child: Container(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: primaryColor,
+                                    // Background color
+                                    shadowColor: Colors.grey,
+                                    // Shadow color
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20.w)),
+                                  ),
+                                  onPressed: () {
+                                    if (formKey.currentState?.validate() ??
+                                        false) {
+                                      formKey.currentState?.save();
+                                      _registerUser(context, "doctor");
+                                    }
+                                  },
+                                  child:  Padding(
+                                    padding:  EdgeInsets.only(top:10.w,bottom: 10.w),
+                                    child: Text(
+                                      "Doctor",
+                                      style: TextStyle(
+                                          color: Colors.white,
+
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 22.sp),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
+                          Expanded(
+                            flex:1,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 10.w),
+                              child: Container(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: primaryColor,
+                                    // Background color
+                                    shadowColor: Colors.grey,
+                                    // Shadow color
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20.w)),
+                                  ),
+                                  onPressed: () {
+                                    if (formKey.currentState?.validate() ??
+                                        false) {
+                                      formKey.currentState?.save();
+                                      _registerUser(context, "patient"); // Pass user type as "patient"
+                                    }
+                                  },
+                                  child:  Padding(
+                                    padding: EdgeInsets.only(top:10.w,bottom: 10.w),
+                                    child: Text(
+                                      "Patient",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 22.sp),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding:  EdgeInsets.only(top:20.w),
+                      child: RichText(
+                        text: TextSpan(
+                            text: "Already have an account?  ",
+                            style: TextStyle(
+                                fontSize: 15.sp,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: "Log in ",
+                                style: TextStyle(
+                                    fontSize: 15.sp,
+                                    color: Color.fromRGBO(7, 197, 227, 1.0),
+                                    fontWeight: FontWeight.bold
+                                ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              // Navigate to the login page when tapped
+                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>LoginScreen()), (route) => route.isFirst,);
+                            },
+                              )
+                            ]
                         ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

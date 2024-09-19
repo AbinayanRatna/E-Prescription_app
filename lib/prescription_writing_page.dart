@@ -137,16 +137,13 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
             padding: EdgeInsets.only(right: 6.w),
             child: IconButton(
                 onPressed: () => {
-
-                Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                builder: (BuildContext context) =>
-                DiagnosisPage(medicines_list:medicines_list)),
-                (Route<dynamic> route) => route is HomeScreen)
-                  //Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>DiagnosisPage(medicines_list:medicines_list)), (Route<dynamic> route) => route is HomeScreen())
-                  //Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> DiagnosisPage(medicines_list:medicines_list)))
-                },
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => DiagnosisPage(
+                                  medicines_list: medicines_list)),
+                          (Route<dynamic> route) => route is HomeScreen)
+                    },
                 icon: Icon(
                   Icons.logout,
                   color: Colors.white,
@@ -477,12 +474,12 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.zero)),
                 ),
-                onPressed: ()  async {
+                onPressed: () async {
                   if (controller_generic_name.text.trim().toString() == "" &&
                       controller_brand_name.text.trim().toString() == "") {
                     showAlertDialog(context);
                   } else {
-                     await addMedicine(
+                    await addMedicine(
                         controller_generic_name.text.trim().toString(),
                         controller_brand_name.text.trim().toString(),
                         selectedValue_frequency,
@@ -491,16 +488,15 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                         text_dosage,
                         text_duration,
                         selectedValue_refill);
-                     controller_brand_name.text="";
-                     controller_generic_name.text="";
+                    controller_brand_name.text = "";
+                    controller_generic_name.text = "";
 
-                      selectedValue_frequency = "Every 8 hours";
-                      selectedValue_intaketime = "Before meals";
-                      selectedValue_route = "Taken by mouth";
-                      selectedValue_refill = "no refill";
-                      text_dosage = "500 mg";
-                      text_duration = "3 days";
-
+                    selectedValue_frequency = "Every 8 hours";
+                    selectedValue_intaketime = "Before meals";
+                    selectedValue_route = "Taken by mouth";
+                    selectedValue_refill = "no refill";
+                    text_dosage = "500 mg";
+                    text_duration = "3 days";
                   }
                 },
                 child: Padding(

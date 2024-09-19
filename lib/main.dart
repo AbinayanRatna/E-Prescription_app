@@ -1,5 +1,6 @@
-import 'package:abin/diagnosis_page.dart';
-import 'package:abin/patient_check.dart';
+import 'package:abin/Signinpage.dart';
+import 'package:abin/flashscreen.dart';
+import 'package:abin/login_screen.dart';
 import 'package:abin/patientmodel.dart';
 import 'package:abin/prescription_writing_page.dart';
 import 'package:flutter/material.dart';
@@ -8,13 +9,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(PatientAdapter());
   Hive.registerAdapter(MedicineAdapter());
   await Hive.openBox<Patient>('Patients');
+  await Hive.openBox<Medicine>('Medicines');
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
@@ -25,10 +26,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      builder: (_,child){
-        return const MaterialApp(
-        home: SplashScreen(),
-        debugShowCheckedModeBanner: false,
+      builder: (_, child) {
+        return MaterialApp(
+          routes: {
+            'FlashScreen': (context) => FlashScreen(),
+          },
+          home: const SplashScreen(),
+          debugShowCheckedModeBanner: false,
         );
       },
     );
@@ -53,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(seconds: 3), () {});
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) =>  PrescriptionWritingPage()),
+      MaterialPageRoute(builder: (context) => FlashScreen()),
     );
   }
 
