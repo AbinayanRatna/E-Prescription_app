@@ -1,8 +1,12 @@
+import 'package:abin/Doc_homescreen.dart';
+import 'package:abin/Pat_homescreen.dart';
+import 'package:abin/Signinpage.dart';
 import 'package:abin/colors.dart';
-import 'package:abin/home_screen.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,54 +18,43 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   // form state
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  String? _email;
-  String? _number;
+  String? _phoneNumber;
+  String? _password;
 
-
-  void signIn(BuildContext context) async {
-    try {
-      var authUser = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: _email!, password: _number!);
-      if (authUser.user != null) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
-      }
-    } catch (e) {
-      String errorMessage;
-      if (e is FirebaseAuthException) {
-        switch (e.code) {
-          case 'user-not-found':
-            errorMessage = 'No user found for this Email.';
-            break;
-          case 'wrong-password':
-            errorMessage = 'Password is Wrong.';
-            break;
-          case 'invalid-email':
-            errorMessage = 'Invalid Email Address.';
-            break;
-          default:
-            errorMessage = 'Error. Please Try Again.';
+  Future<void> signIn(BuildContext context,String userType) async {
+    DatabaseReference dbref=FirebaseDatabase.instance.ref().child("${userType}/${_phoneNumber}");
+    DatabaseEvent accountEvent=await dbref.once();
+    DataSnapshot accountSnapshot=accountEvent.snapshot;
+    if(accountSnapshot.value != null){
+      DatabaseEvent passwordEvent=await dbref.child("password").once();
+      DataSnapshot passwordSnapshot=passwordEvent.snapshot;
+      if(_password == passwordSnapshot.value){
+        if(userType=="doctor"){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>DocHomeScreen()));
+        }else if(userType=="patient"){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>PatHomeScreen()));
         }
-      } else {
-        errorMessage = 'Error. Please Try Again.';
+      }else{
+        _showErrorDialog(context, "Incorrect Password");
       }
-      _showErrorDialog(context, errorMessage);
+    }else{
+      _showErrorDialog(context, "Please create an account first");
     }
   }
 
-  //error in login
   void _showErrorDialog(BuildContext context, String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Log In Error',
-          style: TextStyle(color: primaryColor),),
-
-          content: Text(message,
-          style: const TextStyle(color: primaryColor),),
+          title: const Text(
+            'Log In Error',
+            style: TextStyle(color: Colors.black),
+          ),
+          content: Text(
+            message,
+            style: const TextStyle(color: Colors.black),
+          ),
           actions: [
             TextButton(
               onPressed: () {
@@ -75,128 +68,205 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height; // full screen height
     double width = MediaQuery.of(context).size.width; // full screen width
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
-      body: SizedBox(
+      backgroundColor: const Color(0xFFF1EEEE),
+      body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: GestureDetector(
             onTap: () => FocusScope.of(context).unfocus(),
-              child: Form(
-                key: formKey,
-                child: Padding(
-                  padding: const EdgeInsets.only(left:30,right:30),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Stack(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(top:100),
-                            child: Center(child: SvgPicture.asset("assets/login.svg",height: 200,)),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: height * 0.35),
-                            child: const Center(
-                              child: Text(
-                                "Welcome Back",
+            child: Form(
+              key: formKey,
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(top: 60.w),
+                      child: SvgPicture.asset(
+                        "assets/loginimage.svg",
+                        height: width / 1.5,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 25.w),
+                      child: RichText(
+                        text: TextSpan(
+                            text: "Login ",
+                            style: TextStyle(
+                                fontSize: 35.sp,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: "Account ",
                                 style: TextStyle(
-                                    fontSize: 34,
-                                    fontWeight: FontWeight.bold,
-                                    color: primaryColor // bold font
+                                    fontSize: 35.sp,
+                                    color: Color.fromRGBO(7, 197, 227, 1.0),
+                                    fontWeight: FontWeight.bold),
+                              )
+                            ]),
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsets.only(top: 25.w, left: 25.w, right: 25.w),
+                      child: TextFormField(
+                        onSaved: (value) {
+                          _phoneNumber = value;
+                        },
+                        validator: (number) {
+                          if (number == null || number.isEmpty) {
+                            return "Please Enter the Phone Number";
+                          } else if (number.length != 10) {
+                            return "Not a valid Phone Number";
+                          } else if (!RegExp(r'^[0-9]+$').hasMatch(number)) {
+                            return "Not a valid Phone Number";
+                          }
+                          return null;
+                        },
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.black12),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20.w))),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: Color.fromRGBO(7, 40, 64, 1.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20.w))),
+                          prefixIcon:
+                              const Icon(Icons.phone, color: Colors.black38),
+                          labelText: "PHONE NUMBER",
+                          filled: true,
+                          fillColor: Colors.white,
+                          labelStyle: TextStyle(
+                              color: Colors.black45,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsets.only(top: 15.w, left: 25.w, right: 25.w),
+                      child: TextFormField(
+                        onSaved: (value) {
+                          _password = value;
+                        },
+                        validator: (password) {
+                          if (password == null || password.isEmpty) {
+                            return "Please Enter the Password";
+                          } else if (password.length < 6) {
+                            return "Not a valid Password";
+                          }
+                          return null;
+                        },
+                        obscureText: true,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderSide:
+                                    const BorderSide(color: Colors.black12),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20.w))),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: Color.fromRGBO(7, 40, 64, 1.0)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20.w))),
+                            prefixIcon:
+                                const Icon(Icons.lock, color: Colors.black38),
+                            labelText: "PASSWORD",
+                            filled: true,
+                            fillColor: Colors.white,
+                            labelStyle: TextStyle(
+                                color: Colors.black45,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600)),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top:25.w,left: 35.w,right: 35.w),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex:1,
+                            child: Padding(
+                              padding: EdgeInsets.only(right: 10.w),
+                              child: Container(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: primaryColor,
+                                    // Background color
+                                    shadowColor: Colors.grey,
+                                    // Shadow color
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20.w)),
+                                  ),
+                                  onPressed: () {
+                                    if (formKey.currentState?.validate() ??
+                                        false) {
+                                      formKey.currentState?.save();
+                                      print('phone and password aeaeaeae : $_phoneNumber : $_password');
+                                      signIn(context, "doctor");
+                                    }
+                                  },
+                                  child:  Padding(
+                                    padding:  EdgeInsets.only(top:10.w,bottom: 10.w),
+                                    child: Text(
+                                      "Doctor",
+                                      style: TextStyle(
+                                          color: Colors.white,
+
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 22.sp),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                top: height * 0.44),
-                            child: TextFormField(
-                              onSaved: (value) {
-                                _email = value;
-                              },
-                              validator: (email) {
-                                if (email == null || email.isEmpty) {
-                                  return "Please Enter the Email";
-                                } else if (!RegExp(
-                                    r'^[a-zA-Z0-9]+(?:[._%+-][a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*(?:\.[a-zA-Z]{2,})$')
-                                    .hasMatch(email)) {
-                                  return "Not a valid Email Account";
-                                }
-                                return null;
-                              },
-                              keyboardType: TextInputType.emailAddress,
-                              decoration: const InputDecoration(
-                                  focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: primaryColor)),
-                                  prefixIcon: Icon(Icons.email, color: primaryColor),
-                                  labelText: "EMAIL ADDRESS",
-                                  labelStyle: TextStyle(
-                                      color: primaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600)),
-                            ),
-                          ),
-
-                          Padding(
-                            padding: EdgeInsets.only(top: height * 0.54),
-                            child: TextFormField(
-                              onSaved: (value) {
-                                _number = value;
-                              },
-                              validator: (number) {
-                                if (number == null || number.isEmpty) {
-                                  return "Please Enter the Password";
-                                } else if (number.length  <6) {
-                                  return "Not a valid Password";
-                                }
-                                return null;
-                              },
-                              decoration: const InputDecoration(
-                                  focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: primaryColor)),
-                                  prefixIcon: Icon(Icons.lock, color: primaryColor),
-                                  labelText: "PASSWORD",
-                                  labelStyle: TextStyle(
-                                      color: primaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600)),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: height * 0.65),
-                            child: Center(
-                              child: SizedBox(
-                                height: height * 0.06,
-                                width: width * 0.4,
+                          Expanded(
+                            flex:1,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 10.w),
+                              child: Container(
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: primaryColor, // Background color
-                                    shadowColor: Colors.grey, // Shadow color
+                                    backgroundColor: primaryColor,
+                                    // Background color
+                                    shadowColor: Colors.grey,
+                                    // Shadow color
                                     shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(13)),
+                                        borderRadius: BorderRadius.circular(20.w)),
                                   ),
                                   onPressed: () {
-                                    if (formKey.currentState?.validate() ?? false) {
+                                    if (formKey.currentState?.validate() ??
+                                        false) {
                                       formKey.currentState?.save();
-                                      signIn(context);
+                                      print('phone and password aeaeaeae : $_phoneNumber : $_password');
+                                      signIn(context, "patient");
                                     }
                                   },
-                                  child: const Text(
-                                    "Log in",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        letterSpacing: 0.7,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 22),
+                                  child:  Padding(
+                                    padding: EdgeInsets.only(top:10.w,bottom: 10.w),
+                                    child: Text(
+                                      "Patient",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 22.sp),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -204,10 +274,42 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 40.w),
+                      child: RichText(
+                        text: TextSpan(
+                          text: "Doesn't have an account?  ",
+                          style: TextStyle(
+                              fontSize: 15.sp,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: "Sign up ",
+                              style: TextStyle(
+                                  fontSize: 15.sp,
+                                  color: Color.fromRGBO(7, 197, 227, 1.0),
+                                  fontWeight: FontWeight.bold),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  // Navigate to the login page when tapped
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SignInscreen()),
+                                    (route) => route.isFirst,
+                                  );
+                                },
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
+            ),
           ),
         ),
       ),

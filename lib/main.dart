@@ -1,8 +1,5 @@
-import 'package:abin/Signinpage.dart';
-import 'package:abin/flashscreen.dart';
 import 'package:abin/login_screen.dart';
 import 'package:abin/patientmodel.dart';
-import 'package:abin/prescription_writing_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,11 +24,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       builder: (_, child) {
-        return MaterialApp(
-          routes: {
-            'FlashScreen': (context) => FlashScreen(),
-          },
-          home: const SplashScreen(),
+        return const MaterialApp(
+          home: SplashScreen(),
           debugShowCheckedModeBanner: false,
         );
       },
@@ -50,14 +44,14 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigateToFlashScreen();
+    _navigateToLoginScreen();
   }
 
-  _navigateToFlashScreen() async {
+  _navigateToLoginScreen() async {
     await Future.delayed(const Duration(seconds: 3), () {});
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => FlashScreen()),
+      MaterialPageRoute(builder: (context) => LoginScreen()),
     );
   }
 

@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'alert_dialog_duration.dart';
-import 'home_screen.dart';
-
 class PrescriptionWritingPage extends StatefulWidget {
   const PrescriptionWritingPage({super.key});
 
@@ -142,7 +140,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                           MaterialPageRoute(
                               builder: (BuildContext context) => DiagnosisPage(
                                   medicines_list: medicines_list)),
-                          (Route<dynamic> route) => route is HomeScreen)
+                          (route) => false,)
                     },
                 icon: Icon(
                   Icons.logout,

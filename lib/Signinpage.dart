@@ -1,13 +1,12 @@
 import 'package:abin/colors.dart';
-import 'package:abin/flashscreen.dart';
 import 'package:abin/login_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-
 import 'Doctor.dart';
 import 'Pat_homescreen.dart';
 
@@ -20,11 +19,8 @@ class SignInscreen extends StatefulWidget {
 
 class _SignInscreenState extends State<SignInscreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final DatabaseReference _database = FirebaseDatabase.instance.reference();
   final TextEditingController _dateController = TextEditingController();
 
-  String? _email;
   String? _number;
   String? _password;
   String? _name;
@@ -37,69 +33,43 @@ class _SignInscreenState extends State<SignInscreen> {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
       try {
-        UserCredential userCredential =
-            await _auth.createUserWithEmailAndPassword(
-          email: _email!,
-          password: _password!,
-        );
-
         // Save user data to Firebase Realtime Database
-        DatabaseReference usersRef = _database.child('users');
+        DatabaseReference usersRef = FirebaseDatabase.instance.ref().child('$userType');
         Map<String, dynamic> userData = {
-          "uid": userCredential.user!.uid,
           "name": _name!,
-          "email": _email!,
           "phoneNumber": _number!,
           "birthDate": _birth!,
+          "password":_password!,
           "gender": _gender!,
           "userType": _userType!,
         };
         await usersRef.child(_number!).set(userData);
 
-        print('User registered: ${userCredential.user?.email}');
+        if (kDebugMode) {
+          print('$userType registered: ${_number} - is added');
+        }
         // Navigate to the respective screen based on user type
         if (_userType == 'doctor') {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) =>
-                  DoctorScreen(userId: userCredential.user!.uid),
+                  DoctorScreen(userId: _number!),
             ),
           );
         } else if (_userType == 'patient') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const PatHomeScreen()),
-          );
-        }
-      } on FirebaseAuthException catch (e) {
-        String errorMessage;
-        switch (e.code) {
-          case 'email-already-in-use':
-            errorMessage =
-                'The email address is already in use by another account.';
-            break;
-          case 'invalid-email':
-            errorMessage = 'The email address is not valid.';
-            break;
-          case 'operation-not-allowed':
-            errorMessage = 'Email/password accounts are not enabled.';
-            break;
-          case 'weak-password':
-            errorMessage = 'The password is too weak.';
-            break;
-          default:
-            errorMessage = 'An unknown error occurred.';
-        }
-        print('Error: $e');
-        // Show error message
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>PatHomeScreen()), (route) => route.isFirst,);
 
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(errorMessage)));
+        }
+      } on FirebaseException catch (e) {
+        if(kDebugMode){
+          print('Error: $e');
+        }
+
       } catch (e) {
-        print('Error: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('An unknown error occurred.')));
+        if(kDebugMode){
+          print('Error: $e');
+        }
       }
     }
   }
@@ -109,7 +79,7 @@ class _SignInscreenState extends State<SignInscreen> {
     double height = MediaQuery.of(context).size.height; // full screen height
     double width = MediaQuery.of(context).size.width; // full screen width
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F2F2),
+      backgroundColor: const Color(0xFFF1EEEE),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Container(
@@ -173,6 +143,8 @@ class _SignInscreenState extends State<SignInscreen> {
                             ),
                             prefixIcon: const Icon(Icons.person, color: Colors.black38),
                             labelText: "FULL NAME",
+                            filled: true,
+                            fillColor: Colors.white,
                             labelStyle: TextStyle(
                                 color: Colors.black45,
                                 fontSize: 12.sp,
@@ -208,6 +180,8 @@ class _SignInscreenState extends State<SignInscreen> {
                           ),
                           prefixIcon: const Icon(Icons.phone, color: Colors.black38),
                           labelText: "PHONE NUMBER",
+                          filled: true,
+                          fillColor: Colors.white,
                           labelStyle: TextStyle(
                               color: Colors.black45,
                               fontSize: 12.sp,
@@ -239,6 +213,8 @@ class _SignInscreenState extends State<SignInscreen> {
                                     7, 40, 64, 1.0)),
                                 borderRadius: BorderRadius.all(Radius.circular(20.w))
                             ),
+                            filled: true,
+                            fillColor: Colors.white,
                             prefixIcon:
                                 const Icon(Icons.date_range, color: Colors.black38),
                             labelText: "DATE OF BIRTH",
@@ -256,14 +232,12 @@ class _SignInscreenState extends State<SignInscreen> {
                               return Theme(
                                 data: ThemeData.light().copyWith(
                                   colorScheme: const ColorScheme.light(
-                                    primary: primaryColor,
-                                    // header background color
-                                    onPrimary: Colors.white,
-                                    // header text color
-                                    surface: Color(0xFFBBDEFB),
-                                    // background color
-                                    onSurface: primaryColor, // text color
+                                    primary: primaryColor,          // Header background color
+                                    onPrimary: Colors.white,       // Header text color
+                                    surface: Colors.white,    // Background color
+                                    onSurface: Colors.black,       // Text color inside calendar
                                   ),
+                                  dialogBackgroundColor: Colors.white,  // Background color of the dialog
                                 ),
                                 child: child!,
                               );
@@ -271,7 +245,7 @@ class _SignInscreenState extends State<SignInscreen> {
                           );
                           if (selectedDate != null) {
                             String formattedDate =
-                                DateFormat('MM/dd/yyyy').format(selectedDate);
+                                DateFormat('dd/MM/yyyy').format(selectedDate);
                             setState(() {
                               _dateController.text = formattedDate;
                             });
@@ -295,6 +269,8 @@ class _SignInscreenState extends State<SignInscreen> {
                           ),
                           prefixIcon: const Icon(Icons.wc, color: Colors.black38),
                           labelText: "GENDER",
+                          filled: true,
+                          fillColor: Colors.white,
                           labelStyle: TextStyle(
                             color: Colors.black45,
                             fontSize: 12.sp,
@@ -354,6 +330,8 @@ class _SignInscreenState extends State<SignInscreen> {
                             ),
                             prefixIcon: const Icon(Icons.lock, color: Colors.black38),
                             labelText: "PASSWORD",
+                            filled: true,
+                            fillColor: Colors.white,
                             labelStyle: TextStyle(
                                 color: Colors.black45,
                                 fontSize: 12.sp,
@@ -459,7 +437,7 @@ class _SignInscreenState extends State<SignInscreen> {
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               // Navigate to the login page when tapped
-                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>LoginScreen()), (route) => route.isFirst,);
+                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>LoginScreen()), (route) => false,);
                             },
                               )
                             ]
