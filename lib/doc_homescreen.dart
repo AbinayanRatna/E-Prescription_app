@@ -121,9 +121,14 @@ class _DocHomescreenState extends State<DocHomescreen> {
           ),
           appBar: AppBar(
             //automaticallyImplyLeading: false,
-            title: Text("Welcome doctor",
-                style: TextStyle(color: Colors.black, fontSize: 20.sp)),
-            toolbarHeight: 50.w,
+            title: Text(
+              "Welcome doctor",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold),
+            ),
+            toolbarHeight:60.w,
             actions: [
               Padding(
                 padding: EdgeInsets.only(right: 15.w),
@@ -141,18 +146,18 @@ class _DocHomescreenState extends State<DocHomescreen> {
                     height: 35.w,
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      color: primaryColor,
+                      color: Colors.white,
                     ),
                     child: const Icon(
                       Icons.logout,
                       // color: Color.fromRGBO(9, 75, 75, 1.0),
-                      color: Color.fromRGBO(253, 253, 253, 1.0),
+                      color: primaryColor,
                     ),
                   ),
                 ),
               ),
             ],
-            backgroundColor: const Color.fromRGBO(255, 255, 255, 1.0),
+            backgroundColor: primaryColor,
           ),
           backgroundColor: const Color.fromRGBO(236, 230, 230, 1.0),
           body: Container(
@@ -174,39 +179,50 @@ class _DocHomescreenState extends State<DocHomescreen> {
                   children: [
                     Expanded(
                       flex: 3,
-                      child: Container(
-                        child: Center(
-                          child: CarouselSlider(
-                            carouselController: controller,
-                            items: imageAddress,
-                            options: CarouselOptions(
-                                height:
-                                    MediaQuery.of(context).size.height / 4.h,
-                                autoPlay: true,
-                                autoPlayInterval: Duration(milliseconds: 1800),
-                                autoPlayAnimationDuration:
-                                    const Duration(milliseconds: 500)),
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 15.w),
+                        child: Container(
+                          child: Center(
+                            child: CarouselSlider(
+                              carouselController: controller,
+                              items: imageAddress,
+                              options: CarouselOptions(
+                                  height: MediaQuery.of(context).size.height /
+                                      3.5.h,
+                                  autoPlay: true,
+                                  autoPlayInterval:
+                                      Duration(milliseconds: 1800),
+                                  autoPlayAnimationDuration:
+                                      const Duration(milliseconds: 500)),
+                            ),
                           ),
                         ),
                       ),
                     ),
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Padding(
                         padding: EdgeInsets.only(
-                            left: 25.w, right: 25.w, bottom: 5.w),
+                            left: 25.w, right: 25.w, bottom: 5.w, top: 20.w),
                         child: Container(
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10.w),
                             color: Color.fromRGBO(175, 221, 221, 1.0),
                           ),
-                          child: Center(
-                              child: Text(
-                            "${hospitalName} is selected \n date = 12/12/2024",
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 16.sp),
-                          )),
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                left: 10.w,
+                                right: 10.w,
+                                top: 10.w,
+                                bottom: 5.w),
+                            child: Center(
+                                child: Text(
+                              "${hospitalName} is selected.\nDate = 12/12/2024",
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 16.sp),
+                            )),
+                          ),
                         ),
                       ),
                     ),
@@ -406,8 +422,9 @@ class _DocHomescreenState extends State<DocHomescreen> {
                                           const DocHospitalSelectPage(),
                                     ),
                                   ).then((_) => setState(() {
-                                    hospitalName = userBox.getAt(0)!.userHospitalNow!;
-                                  }));
+                                        hospitalName =
+                                            userBox.getAt(0)!.userHospitalNow!;
+                                      }));
                                 },
                                 child: Container(
                                     decoration: BoxDecoration(

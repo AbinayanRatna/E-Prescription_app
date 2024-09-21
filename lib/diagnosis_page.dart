@@ -1,5 +1,8 @@
+import 'package:abin/colors.dart';
 import 'package:abin/patient_check.dart';
 import 'package:abin/patientmodel.dart';
+import 'package:abin/send_prescription.dart';
+import 'package:abin/userlogmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
@@ -18,6 +21,7 @@ class DiagnosisPageState extends State<DiagnosisPage> {
   TextEditingController controller_diagnosis_details = TextEditingController();
   TextEditingController controller_phoneNumber = TextEditingController();
   TextEditingController controller_patientName = TextEditingController();
+  var userBox = Hive.box<UserDetails>('User');
 
   Future<void> addPatientToLocalDatabase(Patient patient, List<Medicine> medicines) async {
     var box = Hive.box<Patient>('Patients');
@@ -36,9 +40,9 @@ class DiagnosisPageState extends State<DiagnosisPage> {
         toolbarHeight: 60.w,
         title: Text(
           "Diagnosis info",
-          style: TextStyle(fontSize: 22.sp, color: Colors.white),
+          style: TextStyle(fontSize: 20.sp, color: Colors.white,fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: primaryColor,
       ),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
@@ -123,7 +127,7 @@ class DiagnosisPageState extends State<DiagnosisPage> {
                   elevation: 0,
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.zero)),
-                  backgroundColor: const Color.fromRGBO(78, 131, 218, 1.0),
+                  backgroundColor: const Color.fromRGBO(67, 137, 147, 1.0),
                 ),
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context)=> ViewPatientsScreen()));
@@ -146,7 +150,7 @@ class DiagnosisPageState extends State<DiagnosisPage> {
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
                   // backgroundColor: const Color.fromRGBO(23, 64, 124, 1.0),
-                  backgroundColor: const Color.fromRGBO(8, 43, 69, 1.0),
+                  backgroundColor: const Color.fromRGBO(4, 62, 71, 1.0),
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.zero)),
                 ),
@@ -177,9 +181,14 @@ class DiagnosisPageState extends State<DiagnosisPage> {
                           diagnosis:
                           controller_diagnosis_details.text.trim().toString(),
                           extra_details:
-                          controller_extra_details.text.trim().toString());
+                          controller_extra_details.text.trim().toString(),
+                          date: "12/12/2024",
+                          hopital: userBox.getAt(0)!.userHospitalNow!
+                      );
                       await addPatientToLocalDatabase(patient,widget.medicines_list);
-                      showSuccessAlertDialog(context);
+                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>SendPrescriptionPage()), (route)=>route.isFirst);
+                    }else if(widget.medicines_list.isEmpty){
+                      showAlertDialog(context, "Add medicines first");
                     }
                   }
                 },

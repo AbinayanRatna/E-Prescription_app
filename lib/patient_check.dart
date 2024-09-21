@@ -46,7 +46,7 @@ class _ViewPatientsScreenState extends State<ViewPatientsScreen> {
                       child: ListTile(
                         title: Text(person.patient_name),
                         subtitle: Text(
-                          "Medicines: ${person.medicines.map((med) => med.medicineName).join(', ')}",
+                          "Medicines: ${person.medicines.map((med) => med.medicineName).join(', ')} \nHospital: ${box.getAt(index)!.hopital} ",
                         ),
                         trailing: IconButton(
                           icon: Icon(Icons.delete),

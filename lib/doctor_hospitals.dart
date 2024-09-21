@@ -63,7 +63,7 @@ class DocHospitalSelectPageState extends State<DocHospitalSelectPage> {
                     child: Column(
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(top: 5.w, bottom: 5.w),
+                          padding: EdgeInsets.only(top: 5.w, bottom: 5.w,right:5.w,left: 5.w),
                           child: Text(
                             thisUserHospitals['name'],
                             style:
@@ -122,7 +122,7 @@ class DocHospitalSelectPageState extends State<DocHospitalSelectPage> {
         title: Text(
           "Select hospital",
           style: TextStyle(
-              fontSize: 22.sp,
+              fontSize: 20.sp,
               color: Colors.white,
               fontWeight: FontWeight.bold),
         ),
@@ -211,7 +211,10 @@ class DocHospitalSelectPageState extends State<DocHospitalSelectPage> {
                     borderRadius: BorderRadius.circular(20.w),
                     color: Color.fromRGBO(222, 232, 232, 1.0),
                   ),
-                  child: Center(child: Text("$hopitalNowIn is selected",style: TextStyle(color: Colors.black,fontSize: 16.sp),)),
+                  child: Padding(
+                    padding:  EdgeInsets.only(left:10.w,right: 10.w),
+                    child: Center(child: Text("$hopitalNowIn is selected",style: TextStyle(color: Colors.black,fontSize: 16.sp),)),
+                  ),
                 ),
               ),
             ),

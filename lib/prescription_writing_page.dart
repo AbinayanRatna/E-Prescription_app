@@ -1,10 +1,12 @@
 import 'package:abin/alert_dialog_dosage.dart';
+import 'package:abin/colors.dart';
 import 'package:abin/diagnosis_page.dart';
 import 'package:abin/patientmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'alert_dialog_duration.dart';
+
 class PrescriptionWritingPage extends StatefulWidget {
   const PrescriptionWritingPage({super.key});
 
@@ -135,12 +137,13 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
             padding: EdgeInsets.only(right: 6.w),
             child: IconButton(
                 onPressed: () => {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) => DiagnosisPage(
-                                  medicines_list: medicines_list)),
-                          (route) => false,)
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              DiagnosisPage(medicines_list: medicines_list),
+                        ),
+                      )
                     },
                 icon: Icon(
                   Icons.logout,
@@ -152,9 +155,9 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
         toolbarHeight: 60.w,
         title: Text(
           "Select medicine",
-          style: TextStyle(fontSize: 22.sp, color: Colors.white),
+          style: TextStyle(fontSize: 20.sp, color: Colors.white),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: primaryColor,
       ),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
@@ -445,7 +448,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                   elevation: 0,
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.zero)),
-                  backgroundColor: const Color.fromRGBO(78, 131, 218, 1.0),
+                  backgroundColor: const Color.fromRGBO(67, 137, 147, 1.0),
                 ),
                 onPressed: () {
                   // Navigator.push(context, MaterialPageRoute(builder: (context)=>const FirstPage()));
@@ -468,7 +471,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
                   // backgroundColor: const Color.fromRGBO(23, 64, 124, 1.0),
-                  backgroundColor: const Color.fromRGBO(8, 43, 69, 1.0),
+                  backgroundColor: const Color.fromRGBO(4, 62, 71, 1.0),
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.zero)),
                 ),
@@ -500,7 +503,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                 child: Padding(
                   padding: EdgeInsets.only(top: 20.w, bottom: 20.w),
                   child: Text(
-                    "Next",
+                    "Save",
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.sp,

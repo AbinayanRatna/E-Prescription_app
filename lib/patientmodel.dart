@@ -19,7 +19,13 @@ class Patient extends HiveObject{
   @HiveField(4)
   List<Medicine> medicines;
 
-  Patient({required this.patient_name,required this.phone_number, required this.medicines, required this.diagnosis,required this.extra_details});
+  @HiveField(5)
+  String hopital;
+
+  @HiveField(6)
+  String date;
+
+  Patient({required this.patient_name,required this.phone_number, required this.medicines, required this.diagnosis,required this.extra_details,required this.date,required this.hopital});
 }
 
 @HiveType(typeId:1)
