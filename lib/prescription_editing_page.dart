@@ -1,23 +1,47 @@
 import 'package:abin/alert_dialog_dosage.dart';
 import 'package:abin/colors.dart';
-import 'package:abin/diagnosis_page.dart';
 import 'package:abin/patientmodel.dart';
+import 'package:abin/send_prescription.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'alert_dialog_duration.dart';
 
-class PrescriptionWritingPage extends StatefulWidget {
-  const PrescriptionWritingPage({super.key});
+class PrescriptionEditingPage extends StatefulWidget {
+  final int medIndex;
+  final int patientIndex;
+  final Patient patient;
+  final Medicine medicine;
+  const PrescriptionEditingPage({super.key, required this.medIndex,required this.patient, required this.medicine, required this.patientIndex});
 
   @override
   State<StatefulWidget> createState() => PrescriptionWritingPageState();
 }
 
-class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
-  TextEditingController controller_generic_name = TextEditingController();
-  TextEditingController controller_brand_name = TextEditingController();
-  List<Medicine> medicines_list = [];
+class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
+  late TextEditingController controller_generic_name ;
+  late TextEditingController controller_brand_name ;
+  late List<Medicine> medicines_list ;
+  String selectedValue_frequency = "Every 3 hours";
+  String selectedValue_intaketime = "Before meals";
+  String selectedValue_route = "Taken by mouth";
+  String selectedValue_refill = "no refill";
+  String text_dosage = "500 mg";
+  String text_duration = "3 days";
+
+  @override
+  void initState() {
+    controller_generic_name = TextEditingController(text: widget.medicine.medicineName.toString());
+    controller_brand_name = TextEditingController(text: widget.medicine.brandName.toString());
+    medicines_list=widget.patient.medicines;
+    selectedValue_frequency = widget.medicine.frequency;
+    selectedValue_intaketime =  widget.medicine.intakeTime;
+    selectedValue_route =  widget.medicine.route;
+    selectedValue_refill =  widget.medicine.refillTimes;
+    text_dosage =  widget.medicine.dosage;
+    text_duration =  widget.medicine.duration;
+    super.initState();
+  }
 
   Future<void> addMedicine(
       String genericName,
@@ -38,6 +62,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
         duration: duration,
         refillTimes: refill);
     medicines_list.add(medicine);
+    medicines_list.removeAt(widget.medIndex);
   }
 
   List<DropdownMenuItem<String>> get dropdownItems_frequency {
@@ -119,12 +144,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
     return menuItems;
   }
 
-  String selectedValue_frequency = "Every 3 hours";
-  String selectedValue_intaketime = "Before meals";
-  String selectedValue_route = "Taken by mouth";
-  String selectedValue_refill = "no refill";
-  String text_dosage = "500 mg";
-  String text_duration = "3 days";
+
 
   @override
   Widget build(BuildContext context) {
@@ -132,26 +152,6 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 6.w),
-            child: IconButton(
-                onPressed: () => {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              DiagnosisPage(medicines_list: medicines_list),
-                        ),
-                      )
-                    },
-                icon: Icon(
-                  Icons.logout,
-                  color: Colors.white,
-                  size: 30.w,
-                )),
-          ),
-        ],
         toolbarHeight: 60.w,
         title: Text(
           "Select medicine",
@@ -489,15 +489,13 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                         text_dosage,
                         text_duration,
                         selectedValue_refill);
-                    controller_brand_name.text = "";
-                    controller_generic_name.text = "";
-
-                    selectedValue_frequency = "Every 8 hours";
-                    selectedValue_intaketime = "Before meals";
-                    selectedValue_route = "Taken by mouth";
-                    selectedValue_refill = "no refill";
-                    text_dosage = "500 mg";
-                    text_duration = "3 days";
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              SendPrescriptionPage(patientIndex: widget.patientIndex)
+                      ),
+                    );
                   }
                 },
                 child: Padding(

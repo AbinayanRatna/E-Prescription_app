@@ -22,10 +22,10 @@ class DiagnosisPageState extends State<DiagnosisPage> {
   TextEditingController controller_phoneNumber = TextEditingController();
   TextEditingController controller_patientName = TextEditingController();
   var userBox = Hive.box<UserDetails>('User');
+  var box = Hive.box<Patient>('Patients');
+  var boxMedicine = Hive.box<Medicine>('Medicines');
 
   Future<void> addPatientToLocalDatabase(Patient patient, List<Medicine> medicines) async {
-    var box = Hive.box<Patient>('Patients');
-    var boxMedicine = Hive.box<Medicine>('Medicines');
     for(int i=0;i<medicines.length;i++){
       await boxMedicine.add(medicines.elementAt(i));
     }
@@ -185,8 +185,14 @@ class DiagnosisPageState extends State<DiagnosisPage> {
                           date: "12/12/2024",
                           hopital: userBox.getAt(0)!.userHospitalNow!
                       );
+                      int oldIndex=0;
+                      if(box.isNotEmpty){
+                        oldIndex=box.length;
+                        print("old index aeae inside: $oldIndex");
+                      }
+                      print("old index aeae outside: $oldIndex");
                       await addPatientToLocalDatabase(patient,widget.medicines_list);
-                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>SendPrescriptionPage()), (route)=>route.isFirst);
+                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>SendPrescriptionPage(patientIndex:oldIndex ,)), (route)=>route.isFirst);
                     }else if(widget.medicines_list.isEmpty){
                       showAlertDialog(context, "Add medicines first");
                     }
