@@ -1,5 +1,8 @@
+import 'package:abin/doc_homescreen.dart';
+import 'package:abin/pat_homescreen.dart';
 import 'package:abin/login_screen.dart';
 import 'package:abin/patientmodel.dart';
+import 'package:abin/userlogmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,8 +14,10 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(PatientAdapter());
   Hive.registerAdapter(MedicineAdapter());
+  Hive.registerAdapter(UserDetailsAdapter());
   await Hive.openBox<Patient>('Patients');
   await Hive.openBox<Medicine>('Medicines');
+  await Hive.openBox<UserDetails>('User');
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
@@ -49,10 +54,28 @@ class _SplashScreenState extends State<SplashScreen> {
 
   _navigateToLoginScreen() async {
     await Future.delayed(const Duration(seconds: 3), () {});
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-    );
+      var userBox=Hive.box<UserDetails>('User');
+      if(userBox.isEmpty){
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
+      }else if(userBox.isNotEmpty){
+        UserDetails user = userBox.getAt(0)!;
+        if(user.user_logout == false){
+          if(user.user_type=='doctor'){
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => DocHomescreen(phoneNumber: user.user_phone)),
+            );
+          }else if(user.user_type=='patient'){
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => PatHomeScreen(phoneNumber: user.user_phone)),
+            );
+          }
+        }
+      }
   }
 
   @override

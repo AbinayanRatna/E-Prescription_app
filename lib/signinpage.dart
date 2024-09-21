@@ -1,14 +1,16 @@
 import 'package:abin/colors.dart';
 import 'package:abin/login_screen.dart';
+import 'package:abin/userlogmodel.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-import 'Doctor.dart';
-import 'Pat_homescreen.dart';
+import 'doctor_signup.dart';
+import 'pat_homescreen.dart';
 
 class SignInscreen extends StatefulWidget {
   const SignInscreen({super.key});
@@ -27,6 +29,7 @@ class _SignInscreenState extends State<SignInscreen> {
   String? _birth;
   String? _gender;
   String? _userType;
+  var userBox=Hive.box<UserDetails>('User');
 
   void _registerUser(BuildContext context, String userType) async {
     _userType = userType;
@@ -50,6 +53,8 @@ class _SignInscreenState extends State<SignInscreen> {
         }
         // Navigate to the respective screen based on user type
         if (_userType == 'doctor') {
+          UserDetails userOfApp=UserDetails(user_phone: _number!, user_type: "doctor", user_logout: false,userHospitalNow: "No hospital");
+          userBox.add(userOfApp);
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -58,7 +63,9 @@ class _SignInscreenState extends State<SignInscreen> {
             ),
           );
         } else if (_userType == 'patient') {
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>PatHomeScreen()), (route) => route.isFirst,);
+          UserDetails userOfApp=UserDetails(user_phone: _number!, user_type: "patient", user_logout: false,userHospitalNow: "No hospital");
+          userBox.add(userOfApp);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>PatHomeScreen(phoneNumber: _number!,)), (route) => route.isFirst,);
 
         }
       } on FirebaseException catch (e) {

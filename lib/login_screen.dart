@@ -1,12 +1,14 @@
-import 'package:abin/Doc_homescreen.dart';
-import 'package:abin/Pat_homescreen.dart';
-import 'package:abin/Signinpage.dart';
+import 'package:abin/doc_homescreen.dart';
+import 'package:abin/pat_homescreen.dart';
+import 'package:abin/signinpage.dart';
 import 'package:abin/colors.dart';
+import 'package:abin/userlogmodel.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hive/hive.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   String? _phoneNumber;
   String? _password;
+  var userBox=Hive.box<UserDetails>('User');
 
   Future<void> signIn(BuildContext context,String userType) async {
     DatabaseReference dbref=FirebaseDatabase.instance.ref().child("${userType}/${_phoneNumber}");
@@ -30,9 +33,13 @@ class _LoginScreenState extends State<LoginScreen> {
       DataSnapshot passwordSnapshot=passwordEvent.snapshot;
       if(_password == passwordSnapshot.value){
         if(userType=="doctor"){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>DocHomeScreen()));
+          UserDetails userOfApp=UserDetails(user_phone: _phoneNumber!, user_type: "doctor", user_logout: false,userHospitalNow: "No hospital");
+          userBox.add(userOfApp);
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>DocHomescreen(phoneNumber: _phoneNumber!,)));
         }else if(userType=="patient"){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>PatHomeScreen()));
+          UserDetails userOfApp=UserDetails(user_phone: _phoneNumber!, user_type: "patient", user_logout: false,userHospitalNow: "No hospital");
+          userBox.add(userOfApp);
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>PatHomeScreen(phoneNumber: _phoneNumber!,)));
         }
       }else{
         _showErrorDialog(context, "Incorrect Password");
@@ -213,12 +220,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(20.w)),
                                   ),
-                                  onPressed: () {
+                                  onPressed: () async {
                                     if (formKey.currentState?.validate() ??
                                         false) {
                                       formKey.currentState?.save();
                                       print('phone and password aeaeaeae : $_phoneNumber : $_password');
-                                      signIn(context, "doctor");
+                                      await signIn(context, "doctor");
                                     }
                                   },
                                   child:  Padding(
@@ -250,12 +257,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(20.w)),
                                   ),
-                                  onPressed: () {
+                                  onPressed: () async {
                                     if (formKey.currentState?.validate() ??
                                         false) {
                                       formKey.currentState?.save();
                                       print('phone and password aeaeaeae : $_phoneNumber : $_password');
-                                      signIn(context, "patient");
+                                      await signIn(context, "patient");
                                     }
                                   },
                                   child:  Padding(

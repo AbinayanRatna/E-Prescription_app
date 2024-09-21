@@ -4,7 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'dart:io';
-import 'Doc_homescreen.dart';
+import 'doc_homescreen.dart';
 import 'colors.dart';
 
 class DoctorScreen extends StatefulWidget {
@@ -84,7 +84,7 @@ class _DoctorScreenState extends State<DoctorScreen> {
       }
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => DocHomeScreen()),
+        MaterialPageRoute(builder: (context) => DocHomescreen(phoneNumber: widget.userId,)),
         (route) => route.isFirst,
       );
     }

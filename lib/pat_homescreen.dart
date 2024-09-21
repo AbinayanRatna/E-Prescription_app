@@ -1,14 +1,16 @@
+
 import 'package:abin/colors.dart';
 import 'package:flutter/material.dart';
 
-class DocHomeScreen extends StatefulWidget {
-  const DocHomeScreen({super.key});
+class PatHomeScreen extends StatefulWidget {
+  final String phoneNumber;
+  const PatHomeScreen({super.key,required this.phoneNumber});
 
   @override
-  State<DocHomeScreen> createState() => _DocHomeScreenState();
+  State<PatHomeScreen> createState() => _PatHomeScreenState();
 }
 
-class _DocHomeScreenState extends State<DocHomeScreen> {
+class _PatHomeScreenState extends State<PatHomeScreen> {
   // form state
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -33,11 +35,12 @@ class _DocHomeScreenState extends State<DocHomeScreen> {
                   children: <Widget>[
 
 
+
                     Center(
                       child: Padding(
-                        padding: EdgeInsets.only(top: height* 0.5),
+                        padding: EdgeInsets.only(top: height *0.5),
                         child: const Text(
-                          "welcome doctor",
+                          "welcome patient",
                           style: TextStyle(
                               fontSize: 50,
                               fontWeight: FontWeight.bold,
