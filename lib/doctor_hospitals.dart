@@ -96,7 +96,9 @@ class DocHospitalSelectPageState extends State<DocHospitalSelectPage> {
                             user_phone: userDetailsBox.getAt(0)!.user_phone,
                             user_type: userDetailsBox.getAt(0)!.user_type,
                             user_logout: false,
-                            userHospitalNow: thisUserHospitals['name']);
+                            userHospitalNow: thisUserHospitals['name'],
+                          userName: userDetailsBox.getAt(0)!.userName
+                        );
                         userDetailsBox.putAt(0, updatedUser);
                       });
                     },

@@ -23,7 +23,6 @@ class DocHomescreen extends StatefulWidget {
 
 class _DocHomescreenState extends State<DocHomescreen> {
   late CarouselSliderController controller;
-  int currentIndex = 0;
   String hospitalName = "";
   var userBox = Hive.box<UserDetails>("User");
 
@@ -79,60 +78,29 @@ class _DocHomescreenState extends State<DocHomescreen> {
       child: ScreenUtilInit(
         minTextAdapt: true,
         child: Scaffold(
-          drawer: Drawer(
-            child: ListView(
-              padding: EdgeInsets.zero,
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: Row(
               children: [
-                const UserAccountsDrawerHeader(
-                  decoration: BoxDecoration(color: const Color(0xff764abc)),
-                  accountName: Text(
-                    "Person Name",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                const Icon(Icons.person,color:  Color.fromRGBO(6, 83, 94, 1.0),),
+                Flexible(
+                  child: Padding(
+                    padding:  EdgeInsets.only(left:10.w),
+                    child: Text(
+                      "Dr.${userBox.getAt(0)!.userName}",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.bold,overflow: TextOverflow.ellipsis,),
                     ),
                   ),
-                  accountEmail: Text(
-                    "person1@gmail.com",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  currentAccountPicture: FlutterLogo(),
-                ),
-                ListTile(
-                  leading: Icon(
-                    Icons.home,
-                  ),
-                  title: const Text('Page 1'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: Icon(
-                    Icons.person,
-                  ),
-                  title: const Text('Page 2'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
                 ),
               ],
-            ),
-          ),
-          appBar: AppBar(
-            //automaticallyImplyLeading: false,
-            title: Text(
-              "Welcome doctor",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.bold),
             ),
             toolbarHeight:60.w,
             actions: [
               Padding(
-                padding: EdgeInsets.only(right: 15.w),
+                padding: EdgeInsets.only(right: 15.w,left:10.w),
                 child: InkWell(
                   onTap: () {
                     userBox.clear();
@@ -152,7 +120,7 @@ class _DocHomescreenState extends State<DocHomescreen> {
                     child: const Icon(
                       Icons.logout,
                       // color: Color.fromRGBO(9, 75, 75, 1.0),
-                      color: primaryColor,
+                      color: Color.fromRGBO(3, 152, 175, 1.0),
                     ),
                   ),
                 ),

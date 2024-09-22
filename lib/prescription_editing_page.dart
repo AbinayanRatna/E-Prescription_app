@@ -29,6 +29,7 @@ class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
   String text_dosage = "500 mg";
   String text_duration = "3 days";
 
+
   @override
   void initState() {
     controller_generic_name = TextEditingController(text: widget.medicine.medicineName.toString());
@@ -49,13 +50,13 @@ class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
       String frequency,
       String intakeTime,
       String route,
-      String strength,
+      String dosage,
       String duration,
       String refill) async {
     Medicine medicine = Medicine(
         medicineName: genericName,
         brandName: brandName,
-        dosage: strength,
+        dosage: dosage,
         frequency: frequency,
         intakeTime: intakeTime,
         route: route,

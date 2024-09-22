@@ -20,14 +20,15 @@ class UserDetailsAdapter extends TypeAdapter<UserDetails> {
       user_phone: fields[0] as String,
       user_type: fields[1] as String,
       user_logout: fields[2] as bool,
-      userHospitalNow: fields[3] as String?,
+      userHospitalNow: fields[3] as String,
+      userName: fields[4] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserDetails obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.user_phone)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class UserDetailsAdapter extends TypeAdapter<UserDetails> {
       ..writeByte(2)
       ..write(obj.user_logout)
       ..writeByte(3)
-      ..write(obj.userHospitalNow);
+      ..write(obj.userHospitalNow)
+      ..writeByte(4)
+      ..write(obj.userName);
   }
 
   @override

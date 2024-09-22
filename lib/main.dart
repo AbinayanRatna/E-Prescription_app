@@ -56,6 +56,7 @@ class _SplashScreenState extends State<SplashScreen> {
   _navigateToLoginScreen() async {
     await Future.delayed(const Duration(seconds: 3), () {});
       var userBox=Hive.box<UserDetails>('User');
+      //userBox.clear();
       if(userBox.isEmpty){
         Navigator.pushReplacement(
           context,

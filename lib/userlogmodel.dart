@@ -14,7 +14,10 @@ class UserDetails extends HiveObject{
   bool user_logout;
 
   @HiveField(3)
-  String? userHospitalNow;
+  String userHospitalNow;
 
-  UserDetails({required this.user_phone,required this.user_type, required this.user_logout,required this.userHospitalNow});
+  @HiveField(4)
+  String userName;
+
+  UserDetails({required this.user_phone,required this.user_type, required this.user_logout,required this.userHospitalNow,required this.userName});
 }

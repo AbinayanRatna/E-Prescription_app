@@ -53,7 +53,7 @@ class _SignInscreenState extends State<SignInscreen> {
         }
         // Navigate to the respective screen based on user type
         if (_userType == 'doctor') {
-          UserDetails userOfApp=UserDetails(user_phone: _number!, user_type: "doctor", user_logout: false,userHospitalNow: "No hospital");
+          UserDetails userOfApp=UserDetails(user_phone: _number!, user_type: "doctor", user_logout: false,userHospitalNow: "No hospital",userName: _name!);
           userBox.add(userOfApp);
           Navigator.push(
             context,
@@ -63,7 +63,7 @@ class _SignInscreenState extends State<SignInscreen> {
             ),
           );
         } else if (_userType == 'patient') {
-          UserDetails userOfApp=UserDetails(user_phone: _number!, user_type: "patient", user_logout: false,userHospitalNow: "No hospital");
+          UserDetails userOfApp=UserDetails(user_phone: _number!, user_type: "patient", user_logout: false,userHospitalNow: "No hospital",userName: _name!);
           userBox.add(userOfApp);
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>PatHomeScreen(phoneNumber: _number!,)), (route) => route.isFirst,);
 

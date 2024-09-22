@@ -30,14 +30,16 @@ class _LoginScreenState extends State<LoginScreen> {
     DataSnapshot accountSnapshot=accountEvent.snapshot;
     if(accountSnapshot.value != null){
       DatabaseEvent passwordEvent=await dbref.child("password").once();
+      DatabaseEvent nameEvent=await dbref.child("name").once();
       DataSnapshot passwordSnapshot=passwordEvent.snapshot;
+      DataSnapshot nameSnapshot=nameEvent.snapshot;
       if(_password == passwordSnapshot.value){
         if(userType=="doctor"){
-          UserDetails userOfApp=UserDetails(user_phone: _phoneNumber!, user_type: "doctor", user_logout: false,userHospitalNow: "No hospital");
+          UserDetails userOfApp=UserDetails(user_phone: _phoneNumber!, user_type: "doctor", user_logout: false,userHospitalNow: "No hospital",userName:nameSnapshot.value.toString() );
           userBox.add(userOfApp);
           Navigator.push(context, MaterialPageRoute(builder: (context)=>DocHomescreen(phoneNumber: _phoneNumber!,)));
         }else if(userType=="patient"){
-          UserDetails userOfApp=UserDetails(user_phone: _phoneNumber!, user_type: "patient", user_logout: false,userHospitalNow: "No hospital");
+          UserDetails userOfApp=UserDetails(user_phone: _phoneNumber!, user_type: "patient", user_logout: false,userHospitalNow: "No hospital",userName:nameSnapshot.value.toString());
           userBox.add(userOfApp);
           Navigator.push(context, MaterialPageRoute(builder: (context)=>PatHomeScreen(phoneNumber: _phoneNumber!,)));
         }

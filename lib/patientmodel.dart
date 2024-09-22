@@ -61,6 +61,7 @@ class Medicine extends HiveObject {
   @HiveField(7)
   String refillTimes;
 
+
   Medicine({
     required this.medicineName,
     required this.brandName,
@@ -98,6 +99,7 @@ class MedicineGlobalList extends HiveObject {
 
   @HiveField(7)
   String refillTimes;
+
 
   MedicineGlobalList({
     required this.medicineName,
