@@ -17,6 +17,7 @@ void main() async {
   Hive.registerAdapter(UserDetailsAdapter());
   await Hive.openBox<Patient>('Patients');
   await Hive.openBox<Medicine>('Medicines');
+  await Hive.openBox<Medicine>('MedicinesGlobal');
   await Hive.openBox<UserDetails>('User');
   await Firebase.initializeApp();
   runApp(const MyApp());

@@ -4,6 +4,7 @@ import 'package:abin/diagnosis_page.dart';
 import 'package:abin/patientmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
 
 import 'alert_dialog_duration.dart';
 
@@ -18,6 +19,41 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
   TextEditingController controller_generic_name = TextEditingController();
   TextEditingController controller_brand_name = TextEditingController();
   List<Medicine> medicines_list = [];
+  var medicineBox = Hive.box<Medicine>("Medicines");
+  List<Medicine> medicineSearchResults = [];
+
+
+  @override
+  void initState() {
+    super.initState();
+    // Add listener to call the search function when the text changes
+    controller_generic_name.addListener(_searchMedicalItems);
+  }
+
+
+  void _searchMedicalItems() {
+    String query = controller_generic_name.text.toLowerCase();
+    List<Medicine> allMedicinesAvailableInBox = medicineBox.values.toList();
+    setState(() {
+      if (query.isNotEmpty) {
+        medicineSearchResults = allMedicinesAvailableInBox
+            .where((medicineObject) =>
+            medicineObject.medicineName.toLowerCase().contains(query))
+            .toList();
+      } else {
+        // Clear search results if the query is empty
+        medicineSearchResults.clear();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    controller_generic_name.removeListener(_searchMedicalItems);
+    controller_generic_name.dispose();
+    controller_brand_name.dispose();
+    super.dispose();
+  }
 
   Future<void> addMedicine(
       String genericName,
@@ -155,286 +191,309 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
         toolbarHeight: 60.w,
         title: Text(
           "Select medicine",
-          style: TextStyle(fontSize: 20.sp, color: Colors.white),
+          style: TextStyle(fontSize: 20.sp, color: Colors.white,fontWeight: FontWeight.bold),
         ),
         backgroundColor: primaryColor,
       ),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
+        //height: MediaQuery.of(context).size.height,
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(top: 25.w, right: 10.w, left: 10.w),
-                child: Column(
-                  children: [
-                    TextField(
-                      controller: controller_generic_name,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        label: Text("Medicine Name (generic)"),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 15.w),
-                      child: TextField(
-                        controller: controller_brand_name,
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: "Brand name (If available)"),
-                      ),
-                    ),
-                    Padding(
-                        padding: EdgeInsets.only(top: 25.w, left: 5.w),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 1,
-                              child: Text(
-                                "Frequency   : ",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Colors.black45, width: 1.0),
-                                  borderRadius: BorderRadius.circular(5.w),
-                                ),
-                                child: DropdownButton<String>(
-                                  value: selectedValue_frequency,
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      selectedValue_frequency = newValue!;
-                                    });
-                                  },
-                                  items: dropdownItems_frequency,
-                                  isExpanded: true,
-                                  underline:
-                                      const SizedBox(), // Hide the default underline
-                                ),
-                              ),
-                            ),
-                          ],
-                        )),
-                    Padding(
-                        padding: EdgeInsets.only(top: 25.w, left: 5.w),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 1,
-                              child: Text(
-                                "Intake time : ",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Colors.black45, width: 1.0),
-                                  borderRadius: BorderRadius.circular(5.w),
-                                ),
-                                child: DropdownButton<String>(
-                                  value: selectedValue_intaketime,
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      selectedValue_intaketime = newValue!;
-                                    });
-                                  },
-                                  items: dropdownItems_intaketime,
-                                  isExpanded: true,
-                                  underline:
-                                      const SizedBox(), // Hide the default underline
-                                ),
-                              ),
-                            ),
-                          ],
-                        )),
-                    Padding(
-                        padding: EdgeInsets.only(top: 25.w, left: 5.w),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 1,
-                              child: Text(
-                                "Route way   : ",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Colors.black45, width: 1.0),
-                                  borderRadius: BorderRadius.circular(5.w),
-                                ),
-                                child: DropdownButton<String>(
-                                  value: selectedValue_route,
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      selectedValue_route = newValue!;
-                                    });
-                                  },
-                                  items: dropdownItems_routes,
-                                  isExpanded: true,
-                                  underline:
-                                      const SizedBox(), // Hide the default underline
-                                ),
-                              ),
-                            ),
-                          ],
-                        )),
-                    Padding(
-                      padding: EdgeInsets.only(top: 25.w, left: 5.w),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Text(
-                              "Strength      : ",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: TextButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  side: const BorderSide(color: Colors.black45),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(5.w),
-                                  ),
-                                ),
-                              ),
-                              onPressed: () {
-                                showAlertDialogFunction_dosage();
-                              },
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 7.w),
-                                  child: Text(
-                                    text_dosage,
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 15.sp),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 25.w, left: 5.w),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Text(
-                              "Duration      : ",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: TextButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  side: const BorderSide(color: Colors.black45),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(5.w),
-                                  ),
-                                ),
-                              ),
-                              onPressed: () {
-                                showAlertDialogFunction_duration();
-                              },
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 7.w),
-                                  child: Text(
-                                    text_duration,
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 15.sp),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 25.w, left: 5.w),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Text(
-                              "Refill times : ",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 16.w),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Colors.black45, width: 1.0),
-                                borderRadius: BorderRadius.circular(5.w),
-                              ),
-                              child: DropdownButton<String>(
-                                value: selectedValue_refill,
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    selectedValue_refill = newValue!;
-                                  });
-                                },
-                                items: dropdownItems_refill,
-                                isExpanded: true,
-                                underline:
-                                    const SizedBox(), // Hide the default underline
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+          child: Padding(
+            padding: EdgeInsets.only(top: 25.w, right: 10.w, left: 10.w),
+            child: Column(
+              children: [
+                TextField(
+                  controller: controller_generic_name,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    label: Text("Medicine Name (generic)"),
+                  ),
                 ),
-              ),
-            ],
+                controller_generic_name.text.isNotEmpty &&
+                    medicineSearchResults.isNotEmpty
+                    ? ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: medicineSearchResults.length,
+                  itemBuilder: (context, index) {
+                    final medicine = medicineSearchResults[index];
+                    return ListTile(
+                      title: Text(medicine.medicineName),
+                      onTap: () {
+                        setState(() {
+                          controller_generic_name.text =
+                              medicine.medicineName;
+                          controller_brand_name.text=medicine.brandName;
+                           selectedValue_frequency = medicine.frequency;
+                           selectedValue_intaketime = medicine.intakeTime;
+                           selectedValue_route = medicine.route;
+                           selectedValue_refill = medicine.refillTimes;
+                           text_dosage = medicine.route;
+                           text_duration = medicine.duration;
+                          medicineSearchResults.clear();
+                        });
+                      },
+                    );
+                  },
+                )
+                    : SizedBox.shrink(),
+                Padding(
+                  padding: EdgeInsets.only(top: 15.w),
+                  child: TextField(
+                    controller: controller_brand_name,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: "Brand name (If available)"),
+                  ),
+                ),
+                Padding(
+                    padding: EdgeInsets.only(top: 25.w, left: 5.w),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Text(
+                            "Frequency   : ",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Colors.black45, width: 1.0),
+                              borderRadius: BorderRadius.circular(5.w),
+                            ),
+                            child: DropdownButton<String>(
+                              value: selectedValue_frequency,
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  selectedValue_frequency = newValue!;
+                                });
+                              },
+                              items: dropdownItems_frequency,
+                              isExpanded: true,
+                              underline:
+                                  const SizedBox(), // Hide the default underline
+                            ),
+                          ),
+                        ),
+                      ],
+                    )),
+                Padding(
+                    padding: EdgeInsets.only(top: 25.w, left: 5.w),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Text(
+                            "Intake time : ",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Colors.black45, width: 1.0),
+                              borderRadius: BorderRadius.circular(5.w),
+                            ),
+                            child: DropdownButton<String>(
+                              value: selectedValue_intaketime,
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  selectedValue_intaketime = newValue!;
+                                });
+                              },
+                              items: dropdownItems_intaketime,
+                              isExpanded: true,
+                              underline:
+                                  const SizedBox(), // Hide the default underline
+                            ),
+                          ),
+                        ),
+                      ],
+                    )),
+                Padding(
+                    padding: EdgeInsets.only(top: 25.w, left: 5.w),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Text(
+                            "Route way   : ",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Colors.black45, width: 1.0),
+                              borderRadius: BorderRadius.circular(5.w),
+                            ),
+                            child: DropdownButton<String>(
+                              value: selectedValue_route,
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  selectedValue_route = newValue!;
+                                });
+                              },
+                              items: dropdownItems_routes,
+                              isExpanded: true,
+                              underline:
+                                  const SizedBox(), // Hide the default underline
+                            ),
+                          ),
+                        ),
+                      ],
+                    )),
+                Padding(
+                  padding: EdgeInsets.only(top: 25.w, left: 5.w),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Text(
+                          "Strength      : ",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: TextButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(color: Colors.black45),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(5.w),
+                              ),
+                            ),
+                          ),
+                          onPressed: () {
+                            showAlertDialogFunction_dosage();
+                          },
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 7.w),
+                              child: Text(
+                                text_dosage,
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 15.sp),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 25.w, left: 5.w),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Text(
+                          "Duration      : ",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: TextButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(color: Colors.black45),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(5.w),
+                              ),
+                            ),
+                          ),
+                          onPressed: () {
+                            showAlertDialogFunction_duration();
+                          },
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 7.w),
+                              child: Text(
+                                text_duration,
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 15.sp),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 25.w, left: 5.w),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Text(
+                          "Refill times : ",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Colors.black45, width: 1.0),
+                            borderRadius: BorderRadius.circular(5.w),
+                          ),
+                          child: DropdownButton<String>(
+                            value: selectedValue_refill,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectedValue_refill = newValue!;
+                              });
+                            },
+                            items: dropdownItems_refill,
+                            isExpanded: true,
+                            underline:
+                                const SizedBox(), // Hide the default underline
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

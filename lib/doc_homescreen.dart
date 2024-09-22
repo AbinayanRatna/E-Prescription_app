@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:abin/colors.dart';
 import 'package:abin/doctor_hospitals.dart';
 import 'package:abin/login_screen.dart';
+import 'package:abin/patient_check.dart';
 import 'package:abin/prescription_writing_page.dart';
 import 'package:abin/userlogmodel.dart';
 import 'package:flutter/material.dart';
@@ -305,10 +306,7 @@ class _DocHomescreenState extends State<DocHomescreen> {
                                 onTap: () {
                                   print("hospitalname eeeaaa : " +
                                       userBox.getAt(0)!.userHospitalNow!);
-                                  /*
-                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>page()));
-
-                                     */
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>ViewPatientsScreen()));
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
