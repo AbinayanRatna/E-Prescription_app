@@ -23,12 +23,8 @@ class DiagnosisPageState extends State<DiagnosisPage> {
   TextEditingController controller_patientName = TextEditingController();
   var userBox = Hive.box<UserDetails>('User');
   var box = Hive.box<Patient>('Patients');
-  var boxMedicine = Hive.box<Medicine>('Medicines');
 
-  Future<void> addPatientToLocalDatabase(Patient patient, List<Medicine> medicines) async {
-    for(int i=0;i<medicines.length;i++){
-      await boxMedicine.add(medicines.elementAt(i));
-    }
+  Future<void> addPatientToLocalDatabase(Patient patient) async {
     await box.add(patient);
   }
 
@@ -66,7 +62,7 @@ class DiagnosisPageState extends State<DiagnosisPage> {
                           hintText: "Describe about the diagnosis",
                           hintStyle: const TextStyle(color: Colors.black26),
                           labelStyle: TextStyle(fontSize: 16.sp),
-                          label: const Text("Diagnosis details"),
+                          label: const Text("Diagnosis details *"),
                         ),
                       ),
                       Padding(
@@ -191,7 +187,7 @@ class DiagnosisPageState extends State<DiagnosisPage> {
                         print("old index aeae inside: $oldIndex");
                       }
                       print("old index aeae outside: $oldIndex");
-                      await addPatientToLocalDatabase(patient,widget.medicines_list);
+                      await addPatientToLocalDatabase(patient);
                       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>SendPrescriptionPage(patientIndex:oldIndex ,)), (route)=>route.isFirst);
                     }else if(widget.medicines_list.isEmpty){
                       showAlertDialog(context, "Add medicines first");

@@ -229,7 +229,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                            selectedValue_intaketime = medicine.intakeTime;
                            selectedValue_route = medicine.route;
                            selectedValue_refill = medicine.refillTimes;
-                           text_dosage = medicine.route;
+                           text_dosage = medicine.dosage;
                            text_duration = medicine.duration;
                           medicineSearchResults.clear();
                         });

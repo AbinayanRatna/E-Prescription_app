@@ -1,3 +1,4 @@
+import 'package:abin/admin_page.dart';
 import 'package:abin/doc_homescreen.dart';
 import 'package:abin/pat_homescreen.dart';
 import 'package:abin/signinpage.dart';
@@ -227,7 +228,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                         false) {
                                       formKey.currentState?.save();
                                       print('phone and password aeaeaeae : $_phoneNumber : $_password');
-                                      await signIn(context, "doctor");
+
+                                      if(_phoneNumber=="0000000000" && _password=="ansansansans"){
+                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>const AdminPage()));
+                                      }else{
+                                        await signIn(context, "doctor");
+                                      }
                                     }
                                   },
                                   child:  Padding(
@@ -264,7 +270,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                         false) {
                                       formKey.currentState?.save();
                                       print('phone and password aeaeaeae : $_phoneNumber : $_password');
-                                      await signIn(context, "patient");
+                                      if(_phoneNumber=="0000000000" && _password=="ansansansans"){
+                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>const AdminPage()));
+                                      }else{
+                                        await signIn(context, "patient");
+                                      }
+
                                     }
                                   },
                                   child:  Padding(

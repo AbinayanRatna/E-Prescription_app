@@ -24,6 +24,7 @@ class SendPrescriptionPage extends StatefulWidget {
 class _SendPrescriptionPageState extends State<SendPrescriptionPage> {
   late DatabaseReference dbRefPatient;
   late DatabaseReference dbRefDoctor;
+  late DatabaseReference dbRefMedicine;
   var userBox = Hive.box<UserDetails>('User');
   var patientBox = Hive.box<Patient>('Patients');
   late Patient patient;
@@ -41,6 +42,7 @@ class _SendPrescriptionPageState extends State<SendPrescriptionPage> {
     userNow = userBox.getAt(0)!;
     dbRefPatient = FirebaseDatabase.instance.ref().child("patient");
     dbRefDoctor = FirebaseDatabase.instance.ref().child("doctor");
+    dbRefMedicine = FirebaseDatabase.instance.ref().child("medicines");
     super.initState();
   }
 
@@ -179,13 +181,16 @@ class _SendPrescriptionPageState extends State<SendPrescriptionPage> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.w))),
                     onPressed: () async{
+
                       String uuid=const Uuid().v4();
                       if(patientNumbers.contains(controller_phone.text)){
                         Map<String,String> prescription={
                           "id":uuid,
                           "date":patient.date,
                           "hospital":patient.hopital,
+                          "doctor":userNow.userName,
                           "patient_name":patient.patient_name,
+                          "patient_phone":patient.phone_number,
                           "receiver_phone_number":controller_phone.text,
                           "diagnosis":patient.diagnosis,
                           "extra_details":patient.extra_details,
@@ -205,7 +210,11 @@ class _SendPrescriptionPageState extends State<SendPrescriptionPage> {
                             "refill_time":patient.medicines[i].refillTimes,
                           };
                           await dbRefPatient.child("${controller_phone.text}/prescriptions/$uuid/medicines").push().set(medicinedInPrescription);
+                          print("done done 1");
                           await dbRefDoctor.child("${userNow.user_phone}/prescriptions/$uuid/medicines").push().set(medicinedInPrescription);
+                          print("done done 2");
+                          await dbRefMedicine.push().set(medicinedInPrescription);
+                          print("done done 3");
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>DocHomescreen(phoneNumber: userNow.user_phone)));
                         }
                       }else{
@@ -213,6 +222,8 @@ class _SendPrescriptionPageState extends State<SendPrescriptionPage> {
                         controller_phone.text="";
                         controller_patientName.text="";
                       }
+
+
                     },
                     child: Padding(
                       padding: EdgeInsets.only(
@@ -252,7 +263,9 @@ class _SendPrescriptionPageState extends State<SendPrescriptionPage> {
                           builder: (context, TextEditingValue value, _) {
                             return Text(
                               "Date: ${patient.date}\nHospital: ${patient.hopital}\n"
+                              "Doctor name: ${userNow.userName}\n"
                               "Patient name: ${patient.patient_name}\n"
+                              "Patient phone: ${patient.phone_number}\n"
                               "Receiver phone number: ${value.text.trim()}",
                               style: TextStyle(
                                   fontSize: 15.sp,

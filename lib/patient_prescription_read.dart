@@ -1,19 +1,23 @@
+import 'dart:typed_data';
+import 'dart:ui';
 import 'package:abin/patientmodel.dart';
 import 'package:abin/userlogmodel.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
-
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'colors.dart';
 
-class PatientPrescriptionRead extends StatefulWidget{
+
+class PatientPrescriptionRead extends StatefulWidget {
   final String userId;
+
   const PatientPrescriptionRead({super.key, required this.userId});
 
   @override
   State<StatefulWidget> createState() => _PatientPrescriptionReadState();
-
 }
 
 class _PatientPrescriptionReadState extends State<PatientPrescriptionRead> {
@@ -31,142 +35,190 @@ class _PatientPrescriptionReadState extends State<PatientPrescriptionRead> {
   String diagnosis = "";
   String extra_details = "";
   String hospital = "";
+  String doctorName = "";
+  String patientPhone = "";
   String patient_name = "";
-  List<Medicine> medicineList=[];
+  List<Medicine> medicineList = [];
+  GlobalKey _globalKey = GlobalKey();
+  Color myColor = Color(0xDFDDDDDD); // Your widget color
+
 
   @override
   void initState() {
-    print("aeaeaeae : "+widget.userId);
+    print("aeaeaeae : " + widget.userId);
     dbRefUser = FirebaseDatabase.instance.ref().child(
-        "patient/${userBox.getAt(0)!.user_phone}/prescriptions/${widget
-            .userId}");
+        "patient/${userBox.getAt(0)!.user_phone}/prescriptions/${widget.userId}");
     getPrescriptionFromFirebase();
     super.initState();
+  }
+
+  Future<void> _saveToGallery() async {
+    // Capture the widget as an image
+    RenderRepaintBoundary boundary = _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+    if (boundary != null) {
+      final image = await boundary.toImage(pixelRatio: 3.0);
+      final byteData = await image.toByteData(format: ImageByteFormat.png);
+      final Uint8List pngBytes = byteData!.buffer.asUint8List(); // Ensure to use the nullable operator here
+      print("Original Color aeaeae: ${myColor.toString()}");
+      // Save the image to the gallery
+      final result = await ImageGallerySaver.saveImage(pngBytes);
+      print('Image saved to gallery: $result');
+    }
   }
 
   Future<void> getPrescriptionFromFirebase() async {
     DatabaseEvent accountEvent = await dbRefUser.once();
     DataSnapshot accountSnapshot = accountEvent.snapshot;
     if (accountSnapshot.value != null) {
-      Map<dynamic, dynamic> prescriptionDetails = accountSnapshot.value as Map<
-          dynamic,
-          dynamic>;
-      patient_name = prescriptionDetails['patient_name'];
-      print("aeaeaeae  aeaename: "+prescriptionDetails['patient_name']);
-      hospital = prescriptionDetails['hospital'];
-      extra_details = prescriptionDetails['extra_details'];
-      diagnosis = prescriptionDetails['diagnosis'];
-      date = prescriptionDetails['date'];
+      Map<dynamic, dynamic> prescriptionDetails =
+          accountSnapshot.value as Map<dynamic, dynamic>;
+      setState(() {
+        patient_name = prescriptionDetails['patient_name'];
+        hospital = prescriptionDetails['hospital'];
+        doctorName = prescriptionDetails['doctor'];
+        patientPhone = prescriptionDetails['patient_phone'];
+        extra_details = prescriptionDetails['extra_details'];
+        diagnosis = prescriptionDetails['diagnosis'];
+        date = prescriptionDetails['date'];
+      });
 
       DatabaseEvent accountEventMed = await dbRefUser.child("medicines").once();
       DataSnapshot accountSnapshotMed = accountEventMed.snapshot;
 
       if (accountSnapshotMed.value != null) {
-        Map<dynamic, dynamic> medicines = accountSnapshotMed.value as Map<dynamic, dynamic>;
+        Map<dynamic, dynamic> medicines =
+            accountSnapshotMed.value as Map<dynamic, dynamic>;
 
         medicines.forEach((key, value) async {
           // Use null-aware operators to safely access the fields
-          medicineName = value['medicine_name'] ?? 'Unknown';
-           brandName = value['brand_name'] ?? 'Unknown';
-           dosage = value['dosage'] ?? 'Not specified';
-           refill = value['refill_time'] ?? 'Not specified';
-           frequency = value['frequency'] ?? 'Not specified';
-           route = value['route'] ?? 'Not specified';
-           intakeTime = value['intake_time'] ?? 'Not specified';
-           duration = value['duration'] ?? 'Not specified';
-
-
+          setState(() {
+            medicineName = value['medicine_name'] ?? 'Unknown';
+            brandName = value['brand_name'] ?? 'Unknown';
+            dosage = value['dosage'] ?? 'Not specified';
+            refill = value['refill_time'] ?? 'Not specified';
+            frequency = value['frequency'] ?? 'Not specified';
+            route = value['route'] ?? 'Not specified';
+            intakeTime = value['intake_time'] ?? 'Not specified';
+            duration = value['duration'] ?? 'Not specified';
+            medicineList.add(Medicine(
+                medicineName: medicineName,
+                brandName: brandName,
+                dosage: dosage,
+                frequency: frequency,
+                intakeTime: intakeTime,
+                route: route,
+                duration: duration,
+                refillTimes: refill));
+          });
         });
       }
     }
   }
 
-    @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: true,
-          toolbarHeight: 60.w,
-          title: Text(
-            "Prescription preview",
-            style: TextStyle(
-                fontSize: 20.sp,
-                color: Colors.white,
-                fontWeight: FontWeight.bold),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 15.w, left: 10.w),
+            child: InkWell(
+              onTap: () async {
+                await _saveToGallery();
+              },
+              child: Container(
+                width: 35.w,
+                height: 35.w,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
+                child: const Icon(
+                  Icons.arrow_circle_down,
+                  // color: Color.fromRGBO(9, 75, 75, 1.0),
+                  color: Color.fromRGBO(3, 152, 175, 1.0),
+                ),
+              ),
+            ),
           ),
-          backgroundColor: primaryColor,
+        ],
+        toolbarHeight: 60.w,
+        title: Text(
+          "Prescription preview",
+          style: TextStyle(
+              fontSize: 20.sp,
+              color: Colors.white,
+              fontWeight: FontWeight.bold),
         ),
-        body: Container(
-          width: MediaQuery
-              .of(context)
-              .size
-              .width,
+        backgroundColor: primaryColor,
+      ),
+      body: RepaintBoundary(
+        key: _globalKey,
+        child: Container(
+          width: MediaQuery.of(context).size.width,
           decoration: const BoxDecoration(
-            color: Color.fromRGBO(223, 225, 225, 1.0),
+            color: Color(0xDFDFDBDB),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.only(
-                    left: 10.w, right: 20.w, bottom: 15.w),
-
+                padding: EdgeInsets.only(left: 10.w, right: 20.w, bottom: 15.w),
+                child: Padding(
+                  padding: EdgeInsets.only(top: 10.w),
                   child: Text(
                     "Date: $date\nHospital: $hospital\n"
-                        "Patient name: $patient_name\n",
+                    "Doctor name: $doctorName\n"
+                    "Patient name: $patient_name\n"
+                    "Patient phone: $patientPhone\n",
                     style: TextStyle(
                         fontSize: 15.sp,
-                        color: const Color.fromRGBO(46, 46, 46, 1.0)),
+                        color:  Colors.black),
                   ),
-                ),
-
-              Padding(
-                padding: EdgeInsets.only(
-                    left: 10.w, right: 20.w, bottom: 15.w),
-                child: Text(
-                  "Diagnosis: $diagnosis\n\n"
-                      "Extra details: ${(extra_details != "") ? extra_details : "N/A"}\n\nMedicines : ",
-                  style: TextStyle(
-                      fontSize: 15.sp,
-                      color: const Color.fromRGBO(46, 46, 46, 1.0)),
                 ),
               ),
               Padding(
-                padding:
-                EdgeInsets.only(left: 5.w, right: 5.w, bottom: 5.w),
+                padding: EdgeInsets.only(left: 10.w, right: 20.w, bottom: 15.w),
+                child: Text(
+                  "Diagnosis: $diagnosis\n\n"
+                  "Extra details: ${(extra_details != "") ? extra_details : "N/A"}\n\nMedicines : ",
+                  style: TextStyle(
+                      fontSize: 15.sp,
+                      color: Colors.black),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 5.w, right: 5.w, bottom: 5.w),
                 child: ListView.builder(
-                      shrinkWrap: true, // Fix for the height issue
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: medicineList.length,
-                      itemBuilder: (context, index) {
-                        Medicine medicine = medicineList[index];
-
-                        return Card(
-                          margin: EdgeInsets.only(
-                              bottom: 10.w, right: 5.w, left: 5.w),
-                          child: ListTile(
-                            title: Padding(
-                              padding: EdgeInsets.only(bottom: 3.w),
-                              child: Text(
-                                (medicine.medicineName) != ""
-                                    ? medicine.medicineName
-                                    .toUpperCase()
-                                    : "N/A",
-                                style: TextStyle(
-                                    fontSize: 15.sp,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            subtitle: Text(
-                                "Frequency: ${medicine.frequency}\n"
-                                    "Dosage: ${medicine.dosage}\n"
-                                    "Route: ${medicine.route}\n"
-                                    "Duration: ${medicine.duration}\n"
-                                    "Intake time: ${medicine.intakeTime}\n"
-                                    "Refill times: ${medicine.refillTimes}\n"
-                             ),
+                  shrinkWrap: true, // Fix for the height issue
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: medicineList.length,
+                  itemBuilder: (context, index) {
+                    Medicine medicine = medicineList[index];
+                    return Card(
+                      margin:
+                          EdgeInsets.only(bottom: 10.w, right: 10.w, left: 10.w),
+                      child: ListTile(
+                        title: Padding(
+                          padding: EdgeInsets.only(bottom: 3.w),
+                          child: Text(
+                            (medicine.medicineName) != ""
+                                ? medicine.medicineName.toUpperCase()
+                                : "N/A",
+                            style: TextStyle(
+                                fontSize: 15.sp,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
                           ),
+                        ),
+                        subtitle: Text("Frequency: ${medicine.frequency}\n"
+                            "Dosage: ${medicine.dosage}\n"
+                            "Route: ${medicine.route}\n"
+                            "Duration: ${medicine.duration}\n"
+                            "Intake time: ${medicine.intakeTime}\n"
+                            "Refill times: ${medicine.refillTimes}\n"),
+                      ),
                     );
                   },
                 ),
@@ -174,6 +226,7 @@ class _PatientPrescriptionReadState extends State<PatientPrescriptionRead> {
             ],
           ),
         ),
-      );
-    }
+      ),
+    );
   }
+}

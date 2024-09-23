@@ -76,7 +76,8 @@ class _DoctorScreenState extends State<DoctorScreen> {
           'license': _license,
           'specialization': _special,
           'years_of_experience': _years,
-          'id_proof_image':idProofUrl
+          'id_proof_image':idProofUrl,
+          'syncAvailable':"yes"
         });
 
       } catch (e) {
