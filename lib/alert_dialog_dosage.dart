@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+// class for creating a dosage alert dialog
 class AlertDialogPrescription_dosage extends StatefulWidget {
   const AlertDialogPrescription_dosage({super.key});
 
@@ -8,6 +9,7 @@ class AlertDialogPrescription_dosage extends StatefulWidget {
   State<StatefulWidget> createState() => AlertDialogPrescriptionState_dosage();
 }
 
+// class for managing the state of the alert dialog 
 class AlertDialogPrescriptionState_dosage extends State<AlertDialogPrescription_dosage> {
   String dropdownvalue_dosage ="mg";
   String heading = "Dosage per intake";
