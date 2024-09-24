@@ -11,13 +11,21 @@ import 'package:hive_flutter/adapters.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Hive database 
   await Hive.initFlutter();
+
+  //hive adapters 
   Hive.registerAdapter(PatientAdapter());
   Hive.registerAdapter(MedicineAdapter());
   Hive.registerAdapter(UserDetailsAdapter());
+
+  //opening hive boxes to store and reterive data
   await Hive.openBox<Patient>('Patients');
   await Hive.openBox<Medicine>('Medicines');
   await Hive.openBox<UserDetails>('User');
+
+  //Initialize firebase
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
@@ -49,27 +57,39 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    // Next screen
     _navigateToLoginScreen();
   }
 
   _navigateToLoginScreen() async {
     await Future.delayed(const Duration(seconds: 3), () {});
+
+    // Retrieve the 'User' box from hive to check if there are any stored users
       var userBox=Hive.box<UserDetails>('User');
-      //userBox.clear();
+
+    // check if box is empty then goes login screen
       if(userBox.isEmpty){
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => LoginScreen()),
         );
-      }else if(userBox.isNotEmpty){
+      }
+    
+    //if box is not empty, then check user type
+      else if(userBox.isNotEmpty){
         UserDetails user = userBox.getAt(0)!;
+    // If the user has not logged out, navigate to the appropriate home screen 
         if(user.user_logout == false){
+          
+          //if user is doctor then navigate doctor home screen
           if(user.user_type=='doctor'){
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => DocHomescreen(phoneNumber: user.user_phone)),
             );
-          }else if(user.user_type=='patient'){
+          }
+          //if user is patient then navigate patient home screen
+          else if(user.user_type=='patient'){
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => PatHomeScreen(phoneNumber: user.user_phone)),
@@ -81,8 +101,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height; // Full screen height
-    double width = MediaQuery.of(context).size.width; // Full screen width
+    // Full screen height
+    double height = MediaQuery.of(context).size.height; 
+     // Full screen width
+    double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: Colors.white,
