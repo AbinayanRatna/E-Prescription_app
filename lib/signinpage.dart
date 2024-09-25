@@ -31,6 +31,7 @@ class _SignInscreenState extends State<SignInscreen> {
   String? _userType;
   var userBox=Hive.box<UserDetails>('User');
 
+  // Register user with firebase 
   void _registerUser(BuildContext context, String userType) async {
     _userType = userType;
     if (formKey.currentState!.validate()) {
@@ -62,18 +63,21 @@ class _SignInscreenState extends State<SignInscreen> {
                   DoctorScreen(userId: _number!),
             ),
           );
-        } else if (_userType == 'patient') {
+        } 
+        else if (_userType == 'patient') {
           UserDetails userOfApp=UserDetails(user_phone: _number!, user_type: "patient", user_logout: false,userHospitalNow: "No hospital",userName: _name!);
           userBox.add(userOfApp);
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>PatHomeScreen(phoneNumber: _number!,)), (route) => route.isFirst,);
 
         }
-      } on FirebaseException catch (e) {
+      } 
+      on FirebaseException catch (e) {
         if(kDebugMode){
           print('Error: $e');
         }
 
-      } catch (e) {
+      }
+      catch (e) {
         if(kDebugMode){
           print('Error: $e');
         }
