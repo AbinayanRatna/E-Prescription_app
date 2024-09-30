@@ -19,14 +19,17 @@ class DoctorScreen extends StatefulWidget {
 class _DoctorScreenState extends State<DoctorScreen> {
   // form state
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  
+  //variables
   String? _license;
   String? _special;
   String? _years;
 
-  final ImagePicker _picker = ImagePicker();
-  File? _idProofImage;
-  String? _idProofImageName;
+  final ImagePicker _picker = ImagePicker(); //image picker
+  File? _idProofImage; //selected ID proof image
+  String? _idProofImageName; //name of image
 
+  // function to handle image picking from gallery
   Future<void> _pickImage(Function(File?) setImage) async {
     final XFile? pickedFile =
         await _picker.pickImage(source: ImageSource.gallery);
@@ -39,6 +42,7 @@ class _DoctorScreenState extends State<DoctorScreen> {
     }
   }
 
+  // upload image to firebase
   Future<String?> _uploadImage(File image) async {
     try {
       final storageRef = FirebaseStorage.instance.ref();
