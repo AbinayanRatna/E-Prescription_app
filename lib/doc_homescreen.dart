@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:abin/colors.dart';
 import 'package:abin/doctor_hospitals.dart';
 import 'package:abin/login_screen.dart';
@@ -31,7 +30,7 @@ class _DocHomescreenState extends State<DocHomescreen> {
   String syncAvailable = "";
   String userNow="";
   late DatabaseReference dbRefSync;
-   DatabaseReference dbRefMedicine=FirebaseDatabase.instance.ref().child("medicines");
+  DatabaseReference dbRefMedicine=FirebaseDatabase.instance.ref().child("medicines");
   String medicineName ='Unknown';
   String brandName =  'Unknown';
   String dosage ='Not specified';
@@ -182,6 +181,7 @@ class _DocHomescreenState extends State<DocHomescreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        
         // Return false to disable back button
         return false;
       },
