@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
+/// Main class for the hospital selection screen
 class DocHospitalSelectPage extends StatefulWidget {
   const DocHospitalSelectPage({super.key});
 
@@ -15,30 +16,38 @@ class DocHospitalSelectPage extends StatefulWidget {
 }
 
 class DocHospitalSelectPageState extends State<DocHospitalSelectPage> {
+  // Reference to Firebase database
   DatabaseReference dbRefHospital = FirebaseDatabase.instance.ref();
+  //Hive box for stroing user details locally
   var userDetailsBox = Hive.box<UserDetails>("User");
   String phoneNumber = "";
-  late String uuid;
-  String hopitalNowIn = "None of the hospitals";
+  late String uuid;   // Unique identifier for hospitals
+  String hopitalNowIn = "None of the hospitals"; 
   TextEditingController hospitalNameController = TextEditingController();
 
   @override
   void initState() {
+    // Fetch the phone number from the local storage
     phoneNumber = userDetailsBox.getAt(0)!.user_phone;
+    
+    // checking the doctor is currently assigned to a hospital or not
     if(userDetailsBox.getAt(0)!.userHospitalNow=="new"){
       hopitalNowIn = "None of the hospitals";
     }else{
       hopitalNowIn = userDetailsBox.getAt(0)!.userHospitalNow!;
     }
+    // Set the firebase database to reference to the users hospital
     dbRefHospital = dbRefHospital.child("doctor/${phoneNumber}/hospitals");
     super.initState();
   }
 
+  /// Display a list of item for each hospital
   Widget listItem({required Map thisUserHospitals}) {
     return Padding(
       padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 20.w),
       child: Container(
         decoration: BoxDecoration(
+            // Light gray background
             color: Color.fromRGBO(229, 227, 221, 1.0),
             borderRadius: BorderRadius.circular(20.w)),
         child: IntrinsicHeight(
@@ -75,6 +84,7 @@ class DocHospitalSelectPageState extends State<DocHospitalSelectPage> {
                   ),
                 ),
               ),
+              // Button to allow the user to select a hospital
               Expanded(
                 flex: 1,
                 child: ElevatedButton(
@@ -92,6 +102,7 @@ class DocHospitalSelectPageState extends State<DocHospitalSelectPage> {
                     onPressed: () {
                       setState(() {
                         hopitalNowIn=thisUserHospitals['name'];
+                        // Update the user's hospital information in hive
                         UserDetails updatedUser = UserDetails(
                             user_phone: userDetailsBox.getAt(0)!.user_phone,
                             user_type: userDetailsBox.getAt(0)!.user_type,
@@ -134,6 +145,7 @@ class DocHospitalSelectPageState extends State<DocHospitalSelectPage> {
         width: MediaQuery.of(context).size.width,
         child: Column(
           children: [
+            // Hospital name input field and "Add hospital" button
             Expanded(
               flex: 2,
               child: Padding(
@@ -145,6 +157,7 @@ class DocHospitalSelectPageState extends State<DocHospitalSelectPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      //Label for hospital name field
                       Padding(
                         padding: EdgeInsets.only(left: 30.w, top: 20.w),
                         child: Text(
@@ -179,11 +192,14 @@ class DocHospitalSelectPageState extends State<DocHospitalSelectPage> {
                             setState(() {
                               uuid = const Uuid().v4();
                             });
+
+                            // Create a map with hospital data
                             Map<String, String> doctorMapHospital = {
                               "name":
                                   hospitalNameController.text.trim().toString(),
                               "id": uuid,
                             };
+                            // Store the hospital in Firebase
                             dbRefHospital.child(uuid).set(doctorMapHospital);
                           },
                           child: Padding(
@@ -203,6 +219,7 @@ class DocHospitalSelectPageState extends State<DocHospitalSelectPage> {
                 ),
               ),
             ),
+            // Display currently selected hospital
             Expanded(
               flex:1,
               child: Padding(
