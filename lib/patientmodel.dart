@@ -1,9 +1,13 @@
+// Importing the hive package to use its data storage features
 import 'package:hive/hive.dart';
 
+//Part directive that links the generated code file for hive adapters.
 part 'patientmodel.g.dart';
 
+/// Defining a hive type for the "patient" class with a typeId of 0.
 @HiveType(typeId: 0)
 class Patient extends HiveObject {
+  //Definig the fields to store the details.
   @HiveField(0)
   String patient_name;
 
@@ -25,6 +29,7 @@ class Patient extends HiveObject {
   @HiveField(6)
   String date;
 
+  ///Initialize all fields of the "Patient" class.
   Patient(
       {required this.patient_name,
       required this.phone_number,
@@ -35,8 +40,10 @@ class Patient extends HiveObject {
       required this.hopital});
 }
 
+/// Define a hive type for the "Medicine" class which allows to store instances of the classes.
 @HiveType(typeId: 1)
 class Medicine extends HiveObject {
+  // Definig the fields for medicine.
   @HiveField(0)
   String medicineName;
 
@@ -61,7 +68,7 @@ class Medicine extends HiveObject {
   @HiveField(7)
   String refillTimes;
 
-
+///constructor to initialize all fields of the "Medicine" class.
   Medicine({
     required this.medicineName,
     required this.brandName,
