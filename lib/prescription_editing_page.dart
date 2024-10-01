@@ -27,6 +27,8 @@ class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
   
   // list to hold the patient's medicine
   late List<Medicine> medicines_list ;
+
+  // Variables for dropdown selection and text inputs
   String selectedValue_frequency = "Every 3 hours";
   String selectedValue_intaketime = "Before meals";
   String selectedValue_route = "Taken by mouth";
@@ -37,8 +39,10 @@ class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
 
   @override
   void initState() {
+    // Initialize TextEditingControllers with current medicine details
     controller_generic_name = TextEditingController(text: widget.medicine.medicineName.toString());
     controller_brand_name = TextEditingController(text: widget.medicine.brandName.toString());
+    //Initialize the list of medicines for the patient and dropdown selections
     medicines_list=widget.patient.medicines;
     selectedValue_frequency = widget.medicine.frequency;
     selectedValue_intaketime =  widget.medicine.intakeTime;
@@ -49,6 +53,7 @@ class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
     super.initState();
   }
 
+  ///Function to add edited medicine back to the list
   Future<void> addMedicine(
       String genericName,
       String brandName,
@@ -71,6 +76,7 @@ class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
     medicines_list.removeAt(widget.medIndex);
   }
 
+  /// Dropdown items for selecting the frequency of medication 
   List<DropdownMenuItem<String>> get dropdownItems_frequency {
     List<DropdownMenuItem<String>> menuItems = [
       const DropdownMenuItem(
@@ -103,6 +109,7 @@ class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
     return menuItems;
   }
 
+  // dropdown items for selecting intake time
   List<DropdownMenuItem<String>> get dropdownItems_intaketime {
     List<DropdownMenuItem<String>> menuItems = [
       const DropdownMenuItem(
@@ -114,6 +121,7 @@ class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
     return menuItems;
   }
 
+  // Dropdown items for selecting route of adminstration
   List<DropdownMenuItem<String>> get dropdownItems_routes {
     List<DropdownMenuItem<String>> menuItems = [
       const DropdownMenuItem(value: "Taken by mouth", child: Text("Oral")),
@@ -136,6 +144,7 @@ class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
     return menuItems;
   }
 
+  // Dropdown items for selecting refill options
   List<DropdownMenuItem<String>> get dropdownItems_refill {
     List<DropdownMenuItem<String>> menuItems = [
       const DropdownMenuItem(value: "no refill", child: Text("0")),
@@ -149,7 +158,6 @@ class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
     ];
     return menuItems;
   }
-
 
 
   @override
@@ -192,6 +200,7 @@ class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
                             labelText: "Brand name (If available)"),
                       ),
                     ),
+                    // Dropdown for selecting medicine frequency
                     Padding(
                         padding: EdgeInsets.only(top: 25.w, left: 5.w),
                         child: Row(
@@ -231,6 +240,7 @@ class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
                             ),
                           ],
                         )),
+                    // Dropdown for selecting intake time
                     Padding(
                         padding: EdgeInsets.only(top: 25.w, left: 5.w),
                         child: Row(
@@ -270,6 +280,7 @@ class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
                             ),
                           ],
                         )),
+                    // Dropdown for selecting route of administration
                     Padding(
                         padding: EdgeInsets.only(top: 25.w, left: 5.w),
                         child: Row(
