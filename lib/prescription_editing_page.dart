@@ -5,22 +5,27 @@ import 'package:abin/send_prescription.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+// Importing duration alert dialog widget
 import 'alert_dialog_duration.dart';
 
+/// PrescrptionEditing page
 class PrescriptionEditingPage extends StatefulWidget {
-  final int medIndex;
-  final int patientIndex;
-  final Patient patient;
-  final Medicine medicine;
+  final int medIndex;   // medicine being edited
+  final int patientIndex; // patient index in the list
+  final Patient patient; 
+  final Medicine medicine; // medicine that is being edited
   const PrescriptionEditingPage({super.key, required this.medIndex,required this.patient, required this.medicine, required this.patientIndex});
 
   @override
   State<StatefulWidget> createState() => PrescriptionWritingPageState();
 }
 
+/// Prescription Writing page : Manages the state of the Prescription Editing page
 class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
   late TextEditingController controller_generic_name ;
   late TextEditingController controller_brand_name ;
+  
+  // list to hold the patient's medicine
   late List<Medicine> medicines_list ;
   String selectedValue_frequency = "Every 3 hours";
   String selectedValue_intaketime = "Before meals";
