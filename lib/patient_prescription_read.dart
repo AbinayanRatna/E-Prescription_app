@@ -1,5 +1,5 @@
 import 'dart:typed_data';
-import 'dart:ui';
+import 'dart:ui';  // Provides image manipulation and rendering capabilities.
 import 'package:abin/patientmodel.dart';
 import 'package:abin/userlogmodel.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart'; // used to save images to the gallery.
 import 'colors.dart';
 
 
 class PatientPrescriptionRead extends StatefulWidget {
-  final String userId;
+  final String userId;      // Holds the userID to fetch the relevant prescription.
 
   const PatientPrescriptionRead({super.key, required this.userId});
 
@@ -21,8 +21,9 @@ class PatientPrescriptionRead extends StatefulWidget {
 }
 
 class _PatientPrescriptionReadState extends State<PatientPrescriptionRead> {
-  var userBox = Hive.box<UserDetails>("User");
+  var userBox = Hive.box<UserDetails>("User"); // Access hive box to retrive user details.
   late DatabaseReference dbRefUser;
+  // Various fields for stroing prescrption details.
   String medicineName = "";
   String brandName = "";
   String frequency = "";
@@ -45,6 +46,7 @@ class _PatientPrescriptionReadState extends State<PatientPrescriptionRead> {
 
   @override
   void initState() {
+    //Initializes th e state and sets up Firebase database reference for the user's prescription.
     print("aeaeaeae : " + widget.userId);
     dbRefUser = FirebaseDatabase.instance.ref().child(
         "patient/${userBox.getAt(0)!.user_phone}/prescriptions/${widget.userId}");
@@ -52,11 +54,12 @@ class _PatientPrescriptionReadState extends State<PatientPrescriptionRead> {
     super.initState();
   }
 
+  /// 
   Future<void> _saveToGallery() async {
     // Capture the widget as an image
     RenderRepaintBoundary boundary = _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
     if (boundary != null) {
-      final image = await boundary.toImage(pixelRatio: 3.0);
+      final image = await boundary.toImage(pixelRatio: 3.0); // ccapture image with a high resolution.
       final byteData = await image.toByteData(format: ImageByteFormat.png);
       final Uint8List pngBytes = byteData!.buffer.asUint8List(); // Ensure to use the nullable operator here
       print("Original Color aeaeae: ${myColor.toString()}");
@@ -65,7 +68,8 @@ class _PatientPrescriptionReadState extends State<PatientPrescriptionRead> {
       print('Image saved to gallery: $result');
     }
   }
-
+  
+/// function to fetch prescription details and medicine list from Firebase.
   Future<void> getPrescriptionFromFirebase() async {
     DatabaseEvent accountEvent = await dbRefUser.once();
     DataSnapshot accountSnapshot = accountEvent.snapshot;
@@ -73,6 +77,7 @@ class _PatientPrescriptionReadState extends State<PatientPrescriptionRead> {
       Map<dynamic, dynamic> prescriptionDetails =
           accountSnapshot.value as Map<dynamic, dynamic>;
       setState(() {
+        // set prescription details from firebase.
         patient_name = prescriptionDetails['patient_name'];
         hospital = prescriptionDetails['hospital'];
         doctorName = prescriptionDetails['doctor'];
@@ -81,7 +86,8 @@ class _PatientPrescriptionReadState extends State<PatientPrescriptionRead> {
         diagnosis = prescriptionDetails['diagnosis'];
         date = prescriptionDetails['date'];
       });
-
+      
+      // fetch medicine data
       DatabaseEvent accountEventMed = await dbRefUser.child("medicines").once();
       DataSnapshot accountSnapshotMed = accountEventMed.snapshot;
 
@@ -125,7 +131,7 @@ class _PatientPrescriptionReadState extends State<PatientPrescriptionRead> {
             padding: EdgeInsets.only(right: 15.w, left: 10.w),
             child: InkWell(
               onTap: () async {
-                await _saveToGallery();
+                await _saveToGallery(); // Save the prescription to the gallery when tapped.
               },
               child: Container(
                 width: 35.w,
@@ -154,7 +160,7 @@ class _PatientPrescriptionReadState extends State<PatientPrescriptionRead> {
         backgroundColor: primaryColor,
       ),
       body: RepaintBoundary(
-        key: _globalKey,
+        key: _globalKey,             // Key for capturing the widget image.
         child: Container(
           width: MediaQuery.of(context).size.width,
           decoration: const BoxDecoration(
