@@ -219,7 +219,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                   itemBuilder: (context, index) {
                     final medicine = medicineSearchResults[index];
                     return ListTile(
-                      title: Text(medicine.medicineName),
+                      title: Text(medicine.medicineName +" : " + medicine.dosage),
                       onTap: () {
                         setState(() {
                           controller_generic_name.text =
@@ -257,7 +257,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                             "Frequency   : ",
                             style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 18.sp,
+                                fontSize: 17.sp,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -296,7 +296,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                             "Intake time : ",
                             style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 18.sp,
+                                fontSize: 17.sp,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -335,7 +335,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                             "Route way   : ",
                             style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 18.sp,
+                                fontSize: 17.sp,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -374,7 +374,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                           "Strength      : ",
                           style: TextStyle(
                               color: Colors.black,
-                              fontSize: 18.sp,
+                              fontSize: 17.sp,
                               fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -418,7 +418,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                           "Duration      : ",
                           style: TextStyle(
                               color: Colors.black,
-                              fontSize: 18.sp,
+                              fontSize: 17.sp,
                               fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -462,7 +462,7 @@ class PrescriptionWritingPageState extends State<PrescriptionWritingPage> {
                           "Refill times : ",
                           style: TextStyle(
                               color: Colors.black,
-                              fontSize: 18.sp,
+                              fontSize: 17.sp,
                               fontWeight: FontWeight.bold),
                         ),
                       ),

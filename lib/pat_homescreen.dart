@@ -123,8 +123,26 @@ class _PatHomeScreenState extends State<PatHomeScreen> {
         color: Colors.purpleAccent,
       ),
       margin: EdgeInsets.only(left: 15.w),
-      child: Center(
-        child: Text("ad1", style: TextStyle(fontSize: 25.w)),
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(30.w)),
+        child: Image.asset(
+          "assets/img2.jpeg",
+          fit: BoxFit.fill,
+        ),
+      ),
+    ),
+    Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(30.w)),
+        color: Colors.purpleAccent,
+      ),
+      margin: EdgeInsets.only(left: 15.w),
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(30.w)),
+        child: Image.asset(
+          "assets/img4.png",
+          fit: BoxFit.fill,
+        ),
       ),
     ),
     Container(
@@ -133,18 +151,26 @@ class _PatHomeScreenState extends State<PatHomeScreen> {
         color: Colors.pinkAccent,
       ),
       margin: EdgeInsets.only(left: 15.w),
-      child: Center(
-        child: Text("ad2", style: TextStyle(fontSize: 25.w)),
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(30.w)),
+        child: Image.asset(
+          "assets/img1.jpeg",
+          fit: BoxFit.fill,
+        ),
       ),
     ),
     Container(
-      margin: EdgeInsets.only(left: 15.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(30.w)),
-        color: Colors.pink,
+        color: Colors.purpleAccent,
       ),
-      child: Center(
-        child: Text("ad3", style: TextStyle(fontSize: 25.w)),
+      margin: EdgeInsets.only(left: 15.w),
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(30.w)),
+        child: Image.asset(
+          "assets/img3.jpeg",
+          fit: BoxFit.fill,
+        ),
       ),
     ),
   ];

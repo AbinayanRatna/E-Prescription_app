@@ -4,6 +4,7 @@ import 'package:abin/pat_homescreen.dart';
 import 'package:abin/signinpage.dart';
 import 'package:abin/colors.dart';
 import 'package:abin/userlogmodel.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -19,45 +20,39 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // Form state 
+  // form state
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  // Variables 
   String? _phoneNumber;
   String? _password;
   var userBox=Hive.box<UserDetails>('User');
 
-  // Handling sign-in process
   Future<void> signIn(BuildContext context,String userType) async {
-    //reference to the firebase db based on user type
     DatabaseReference dbref=FirebaseDatabase.instance.ref().child("${userType}/${_phoneNumber}");
-    //fetch account from firebase
     DatabaseEvent accountEvent=await dbref.once();
     DataSnapshot accountSnapshot=accountEvent.snapshot;
-    //checking account is exist 
     if(accountSnapshot.value != null){
-      // fetch password and username 
-      DatabaseEvent passwordEvent=await dbref.child("password").once();
+      // DatabaseEvent passwordEvent=await dbref.child("password").once();
+       DatabaseEvent emailEvent=await dbref.child("email").once();
       DatabaseEvent nameEvent=await dbref.child("name").once();
-      DataSnapshot passwordSnapshot=passwordEvent.snapshot;
+      // DataSnapshot passwordSnapshot=passwordEvent.snapshot;
+       DataSnapshot emailSnapshot=emailEvent.snapshot;
       DataSnapshot nameSnapshot=nameEvent.snapshot;
-      //Check if the password is correct
-      if(_password == passwordSnapshot.value){
+      try{
+        UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: emailSnapshot.value.toString(), password: _password!);
         if(userType=="doctor"){
           UserDetails userOfApp=UserDetails(user_phone: _phoneNumber!, user_type: "doctor", user_logout: false,userHospitalNow: "No hospital",userName:nameSnapshot.value.toString() );
           userBox.add(userOfApp);
           Navigator.push(context, MaterialPageRoute(builder: (context)=>DocHomescreen(phoneNumber: _phoneNumber!,)));
-        }
-        else if(userType=="patient"){
+        }else if(userType=="patient"){
           UserDetails userOfApp=UserDetails(user_phone: _phoneNumber!, user_type: "patient", user_logout: false,userHospitalNow: "No hospital",userName:nameSnapshot.value.toString());
           userBox.add(userOfApp);
           Navigator.push(context, MaterialPageRoute(builder: (context)=>PatHomeScreen(phoneNumber: _phoneNumber!,)));
         }
+      }catch(e){
+        _showErrorDialog(context, "Incorrect credentials");
       }
-      else{
-        _showErrorDialog(context, "Incorrect Password");
-      }
-    }
-    else{
+    }else{
       _showErrorDialog(context, "Please create an account first");
     }
   }

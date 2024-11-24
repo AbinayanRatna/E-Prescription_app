@@ -1,6 +1,7 @@
 import 'package:abin/colors.dart';
 import 'package:abin/login_screen.dart';
 import 'package:abin/userlogmodel.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
@@ -29,7 +30,10 @@ class _SignInscreenState extends State<SignInscreen> {
   String? _birth;
   String? _gender;
   String? _userType;
+  String? _email;
   var userBox=Hive.box<UserDetails>('User');
+  final RegExp _emailRegExp = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$');
+
 
   // Register user with firebase 
   void _registerUser(BuildContext context, String userType) async {
@@ -37,16 +41,20 @@ class _SignInscreenState extends State<SignInscreen> {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
       try {
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: _email!, password: _password!);
+
         // Save user data to Firebase Realtime Database
         DatabaseReference usersRef = FirebaseDatabase.instance.ref().child('$userType');
         Map<String, dynamic> userData = {
           "name": _name!,
           "phoneNumber": _number!,
           "birthDate": _birth!,
-          "password":_password!,
           "gender": _gender!,
           "userType": _userType!,
+          "email":_email!
         };
+
         await usersRef.child(_number!).set(userData);
 
         if (kDebugMode) {
@@ -137,7 +145,7 @@ class _SignInscreenState extends State<SignInscreen> {
                         },
                         validator: (name) {
                           if (name == null || name.isEmpty) {
-                            return "Please Enter the Your Name";
+                            return "Please Enter Your Name";
                           }
                           return null;
                         },
@@ -154,6 +162,43 @@ class _SignInscreenState extends State<SignInscreen> {
                             ),
                             prefixIcon: const Icon(Icons.person, color: Colors.black38),
                             labelText: "FULL NAME",
+                            filled: true,
+                            fillColor: Colors.white,
+                            labelStyle: TextStyle(
+                                color: Colors.black45,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600)),
+                      ),
+                    ),
+                    Padding(
+                      padding:  EdgeInsets.only(top:15.w,left: 25.w,right: 25.w),
+                      child: TextFormField(
+                        onSaved: (value) {
+                          if(value != ""){
+                            _email = value!.trim().toString();
+                          }
+                        },
+                        validator: (name) {
+                          if (name == null || name.isEmpty) {
+                            return "Please Enter Email";
+                          }else if(!_emailRegExp.hasMatch(name)){
+                            return "Email not valid";
+                          }
+                          return null;
+                        },
+                        keyboardType: TextInputType.emailAddress,
+                        decoration:  InputDecoration(
+                            border: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.black12),
+                                borderRadius: BorderRadius.all(Radius.circular(20.w))
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Color.fromRGBO(
+                                    7, 40, 64, 1.0)),
+                                borderRadius: BorderRadius.all(Radius.circular(20.w))
+                            ),
+                            prefixIcon: const Icon(Icons.email, color: Colors.black38),
+                            labelText: "EMAIL",
                             filled: true,
                             fillColor: Colors.white,
                             labelStyle: TextStyle(

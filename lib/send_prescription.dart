@@ -210,11 +210,11 @@ class _SendPrescriptionPageState extends State<SendPrescriptionPage> {
                             "refill_time":patient.medicines[i].refillTimes,
                           };
                           await dbRefPatient.child("${controller_phone.text}/prescriptions/$uuid/medicines").push().set(medicinedInPrescription);
-                          print("done done 1");
+                          // print("done done 1");
                           await dbRefDoctor.child("${userNow.user_phone}/prescriptions/$uuid/medicines").push().set(medicinedInPrescription);
-                          print("done done 2");
+                          // print("done done 2");
                           await dbRefMedicine.push().set(medicinedInPrescription);
-                          print("done done 3");
+                          // print("done done 3");
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>DocHomescreen(phoneNumber: userNow.user_phone)));
                         }
                       }else{

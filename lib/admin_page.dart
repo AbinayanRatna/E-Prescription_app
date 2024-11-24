@@ -2,7 +2,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive/hive.dart';
 
 import 'colors.dart';
 import 'login_screen.dart';
@@ -15,21 +14,24 @@ class AdminPage extends StatefulWidget {
 }
 
 class _adminPageState extends State<AdminPage> {
-
   Future<void> removeDuplicateMedicines() async {
-    DatabaseReference dbRef = FirebaseDatabase.instance.ref().child("medicines");
+    DatabaseReference dbRef =
+        FirebaseDatabase.instance.ref().child("medicines");
     DatabaseEvent event = await dbRef.once();
     DataSnapshot snapshot = event.snapshot;
 
     if (snapshot.value != null) {
       Map<dynamic, dynamic> medicines = snapshot.value as Map<dynamic, dynamic>;
-      Map<String, dynamic> uniqueMedicines = {}; // To store unique medicine entries
+      Map<String, dynamic> uniqueMedicines =
+          {}; // To store unique medicine entries
 
       // Iterate over all medicines
       medicines.forEach((key, value) {
-        String uniqueKey = '${value['medicine_name']}-${value['dosage']}-${value['duration']}-${value['frequency']}-${value['intake_time']}-${value['medicine_name']}-${value['refill_time']}-${value['route']}'; // Create a unique identifier
+        String uniqueKey =
+            '${value['medicine_name']}-${value['dosage']}'; // Create a unique identifier
         if (!uniqueMedicines.containsKey(uniqueKey)) {
-          uniqueMedicines[uniqueKey] = key; // Store the key to keep track of unique entries
+          uniqueMedicines[uniqueKey] =
+              key; // Store the key to keep track of unique entries
         } else {
           // Duplicate found, remove it from Firebase
           dbRef.child(key).remove();
@@ -49,9 +51,7 @@ class _adminPageState extends State<AdminPage> {
 
       // Iterate over all medicines
       medicines.forEach((key, value) {
-        dbRef.child(key).update({
-          'syncAvailable':'yes'
-        });
+        dbRef.child(key).update({'syncAvailable': 'yes'});
       });
     }
   }

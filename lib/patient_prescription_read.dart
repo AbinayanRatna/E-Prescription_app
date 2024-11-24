@@ -1,5 +1,5 @@
 import 'dart:typed_data';
-import 'dart:ui';  // Provides image manipulation and rendering capabilities.
+import 'dart:ui';
 import 'package:abin/patientmodel.dart';
 import 'package:abin/userlogmodel.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart'; // used to save images to the gallery.
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'colors.dart';
 
 
 class PatientPrescriptionRead extends StatefulWidget {
-  final String userId;      // Holds the userID to fetch the relevant prescription.
+  final String userId;
 
   const PatientPrescriptionRead({super.key, required this.userId});
 
@@ -21,9 +21,8 @@ class PatientPrescriptionRead extends StatefulWidget {
 }
 
 class _PatientPrescriptionReadState extends State<PatientPrescriptionRead> {
-  var userBox = Hive.box<UserDetails>("User"); // Access hive box to retrive user details.
+  var userBox = Hive.box<UserDetails>("User");
   late DatabaseReference dbRefUser;
-  // Various fields for stroing prescrption details.
   String medicineName = "";
   String brandName = "";
   String frequency = "";
@@ -46,7 +45,6 @@ class _PatientPrescriptionReadState extends State<PatientPrescriptionRead> {
 
   @override
   void initState() {
-    //Initializes th e state and sets up Firebase database reference for the user's prescription.
     print("aeaeaeae : " + widget.userId);
     dbRefUser = FirebaseDatabase.instance.ref().child(
         "patient/${userBox.getAt(0)!.user_phone}/prescriptions/${widget.userId}");
@@ -54,12 +52,11 @@ class _PatientPrescriptionReadState extends State<PatientPrescriptionRead> {
     super.initState();
   }
 
-  /// 
   Future<void> _saveToGallery() async {
     // Capture the widget as an image
     RenderRepaintBoundary boundary = _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
     if (boundary != null) {
-      final image = await boundary.toImage(pixelRatio: 3.0); // ccapture image with a high resolution.
+      final image = await boundary.toImage(pixelRatio: 3.0);
       final byteData = await image.toByteData(format: ImageByteFormat.png);
       final Uint8List pngBytes = byteData!.buffer.asUint8List(); // Ensure to use the nullable operator here
       print("Original Color aeaeae: ${myColor.toString()}");
@@ -68,8 +65,7 @@ class _PatientPrescriptionReadState extends State<PatientPrescriptionRead> {
       print('Image saved to gallery: $result');
     }
   }
-  
-/// function to fetch prescription details and medicine list from Firebase.
+
   Future<void> getPrescriptionFromFirebase() async {
     DatabaseEvent accountEvent = await dbRefUser.once();
     DataSnapshot accountSnapshot = accountEvent.snapshot;
@@ -77,7 +73,6 @@ class _PatientPrescriptionReadState extends State<PatientPrescriptionRead> {
       Map<dynamic, dynamic> prescriptionDetails =
           accountSnapshot.value as Map<dynamic, dynamic>;
       setState(() {
-        // set prescription details from firebase.
         patient_name = prescriptionDetails['patient_name'];
         hospital = prescriptionDetails['hospital'];
         doctorName = prescriptionDetails['doctor'];
@@ -86,8 +81,7 @@ class _PatientPrescriptionReadState extends State<PatientPrescriptionRead> {
         diagnosis = prescriptionDetails['diagnosis'];
         date = prescriptionDetails['date'];
       });
-      
-      // fetch medicine data
+
       DatabaseEvent accountEventMed = await dbRefUser.child("medicines").once();
       DataSnapshot accountSnapshotMed = accountEventMed.snapshot;
 
@@ -131,7 +125,17 @@ class _PatientPrescriptionReadState extends State<PatientPrescriptionRead> {
             padding: EdgeInsets.only(right: 15.w, left: 10.w),
             child: InkWell(
               onTap: () async {
-                await _saveToGallery(); // Save the prescription to the gallery when tapped.
+                _saveToGallery().then((_) {
+                  // Success listener
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Saved to gallery successfully!')),
+                  );
+                }).catchError((e) {
+                  // Error handling
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to save to gallery: $e')),
+                  );
+                });
               },
               child: Container(
                 width: 35.w,
@@ -160,79 +164,120 @@ class _PatientPrescriptionReadState extends State<PatientPrescriptionRead> {
         backgroundColor: primaryColor,
       ),
       body: RepaintBoundary(
-        key: _globalKey,             // Key for capturing the widget image.
+        key: _globalKey,
         child: Container(
           width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
           decoration: const BoxDecoration(
             color: Color(0xDFDFDBDB),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 10.w, right: 20.w, bottom: 15.w),
-                child: Padding(
-                  padding: EdgeInsets.only(top: 10.w),
-                  child: Text(
-                    "Date: $date\nHospital: $hospital\n"
-                    "Doctor name: $doctorName\n"
-                    "Patient name: $patient_name\n"
-                    "Patient phone: $patientPhone\n",
-                    style: TextStyle(
-                        fontSize: 15.sp,
-                        color:  Colors.black),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 10.w, right: 20.w, bottom: 15.w),
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 10.w),
+                    child: Text(
+                      "Date: $date\nHospital: $hospital\n"
+                      "Doctor name: $doctorName\n"
+                      "Patient name: $patient_name\n"
+                      "Patient phone: $patientPhone\n",
+                      style: TextStyle(
+                          fontSize: 15.sp,
+                          color:  Colors.black),
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 10.w, right: 20.w, bottom: 15.w),
-                child: Text(
-                  "Diagnosis: $diagnosis\n\n"
-                  "Extra details: ${(extra_details != "") ? extra_details : "N/A"}\n\nMedicines : ",
-                  style: TextStyle(
-                      fontSize: 15.sp,
-                      color: Colors.black),
+                Padding(
+                  padding: EdgeInsets.only(left: 10.w, right: 20.w, bottom: 15.w),
+                  child: Text(
+                    "Diagnosis: $diagnosis\n\n"
+                    "Extra details: ${(extra_details != "") ? extra_details : "N/A"}\n\nMedicines : ",
+                    style: TextStyle(
+                        fontSize: 15.sp,
+                        color: Colors.black),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 5.w, right: 5.w, bottom: 5.w),
-                child: ListView.builder(
-                  shrinkWrap: true, // Fix for the height issue
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: medicineList.length,
-                  itemBuilder: (context, index) {
-                    Medicine medicine = medicineList[index];
-                    return Card(
-                      margin:
-                          EdgeInsets.only(bottom: 10.w, right: 10.w, left: 10.w),
-                      child: ListTile(
-                        title: Padding(
-                          padding: EdgeInsets.only(bottom: 3.w),
-                          child: Text(
-                            (medicine.medicineName) != ""
-                                ? medicine.medicineName.toUpperCase()
-                                : "N/A",
-                            style: TextStyle(
-                                fontSize: 15.sp,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
+                Padding(
+                  padding: EdgeInsets.only(left: 5.w, right: 5.w, bottom: 5.w),
+                  child: ListView.builder(
+                    shrinkWrap: true, // Fix for the height issue
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: medicineList.length,
+                    itemBuilder: (context, index) {
+                      Medicine medicine = medicineList[index];
+                      return Card(
+                        margin:
+                            EdgeInsets.only(bottom: 10.w, right: 10.w, left: 10.w),
+                        child: ListTile(
+                          title: Padding(
+                            padding: EdgeInsets.only(bottom: 3.w),
+                            child: Text(
+                              (medicine.medicineName) != ""
+                                  ? medicine.medicineName.toUpperCase()
+                                  : "N/A",
+                              style: TextStyle(
+                                  fontSize: 15.sp,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
+                          subtitle: Text("Frequency: ${medicine.frequency}\n"
+                              "Dosage: ${medicine.dosage}\n"
+                              "Route: ${medicine.route}\n"
+                              "Duration: ${medicine.duration}\n"
+                              "Intake time: ${medicine.intakeTime}\n"
+                              "Refill times: ${medicine.refillTimes}\n"),
                         ),
-                        subtitle: Text("Frequency: ${medicine.frequency}\n"
-                            "Dosage: ${medicine.dosage}\n"
-                            "Route: ${medicine.route}\n"
-                            "Duration: ${medicine.duration}\n"
-                            "Intake time: ${medicine.intakeTime}\n"
-                            "Refill times: ${medicine.refillTimes}\n"),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+}
+showAlertDialog(BuildContext context, String detail) {
+  // Create button
+  Widget okButton = ElevatedButton(
+    style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(13.w)))),
+    child: Text("Got it",
+        style: TextStyle(
+            fontSize: 15.sp, color: Colors.blue, fontWeight: FontWeight.bold)),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+
+  // Create AlertDialog
+  AlertDialog alert = AlertDialog(
+    backgroundColor: Colors.blue,
+    shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(5.w)),
+    content: Text(
+      detail,
+      style: TextStyle(
+          fontSize: 20.sp, fontWeight: FontWeight.bold, color: Colors.white),
+    ),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }

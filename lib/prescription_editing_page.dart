@@ -211,7 +211,7 @@ class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
                                 "Frequency   : ",
                                 style: TextStyle(
                                     color: Colors.black,
-                                    fontSize: 18.sp,
+                                    fontSize: 17.sp,
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
@@ -251,7 +251,7 @@ class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
                                 "Intake time : ",
                                 style: TextStyle(
                                     color: Colors.black,
-                                    fontSize: 18.sp,
+                                    fontSize: 17.sp,
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
@@ -291,7 +291,7 @@ class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
                                 "Route way   : ",
                                 style: TextStyle(
                                     color: Colors.black,
-                                    fontSize: 18.sp,
+                                    fontSize: 17.sp,
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
@@ -330,7 +330,7 @@ class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
                               "Strength      : ",
                               style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 18.sp,
+                                  fontSize: 17.sp,
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
@@ -374,7 +374,7 @@ class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
                               "Duration      : ",
                               style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 18.sp,
+                                  fontSize: 17.sp,
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
@@ -418,7 +418,7 @@ class PrescriptionWritingPageState extends State<PrescriptionEditingPage> {
                               "Refill times : ",
                               style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 18.sp,
+                                  fontSize: 17.sp,
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
